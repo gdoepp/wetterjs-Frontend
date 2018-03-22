@@ -1,0 +1,31 @@
+<!--  (c) Gerhard Döppert, 2017, GNU GPL 3 -->
+
+<h2>Wetter in den letzten Stunden</h2>
+
+<h2>{{tag}}</h2>
+<table border='1' ts-wrapper>
+	<thead>
+	<tr class='wettertab'>
+	    <th></th>
+	    <th  *ngFor="let colgrname of colgrname, let i=index" [attr.colspan]='colgrlen[i]'>{{colgrname}}</th>
+	  </tr>
+	  <tr class='wettertab' >
+	    <th [attr.ts-criteria]="time_t">Zeit</th>
+	    <th [attr.ts-criteria]="col"  *ngFor="let col of values" >{{werte[col]}}</th>
+	    </tr>
+	    <tr>
+	  
+	    
+	  </tr>
+	</thead>
+	<tbody>	
+	<tr class='wettertab' *ngFor="let tagwert of data.rows"  ts-repeat>
+	  <td >{{tagwert.time_t}}</td>
+	  <td class='tab' *ngFor="let col of values"   >{{tagwert[col]}}</td>
+	  </tr>
+	</tbody>  	    
+</table>
+
+    <br/>
+
+

@@ -1,0 +1,67 @@
+<!--  (c) Gerhard Döppert, 2017 -->
+
+<h2>{{data.werte[value]}} {{data.title}} {{data.station}}</h2>
+
+<div style="position:relative;width:100%;">
+<canvas width="160" height="100"></canvas>
+
+<svg width='100%' viewBox="0 -10 1600 978" version="1.1" xmlns="http://www.w3.org/2000/svg">
+
+<g>
+	 
+	<polyline *ngFor="let x of data.gridXPath" 
+	   [attr.points]="x"
+	  style="fill:none;stroke:black;stroke-width:1" />
+	
+	<polyline *ngFor="let y of data.gridYPath" 
+  [attr.points]="y"
+	  style="fill:none;stroke:black;stroke-width:1px" />
+	
+	<rect class='button' *ngFor="let t of data.link; let i=index"
+	   [attr.x]="data.x[i]" [attr.y]="data.tickXy-20"
+	   [attr.width]="data.tickXwidth" [attr.height]="data.tickXheight*2"
+	   (click)="goto(t, 'down')" >
+	</rect>
+	
+	<text  *ngFor="let tag of data.tickXTag; let i=index"
+	   [attr.x]="data.tickXx[i]" [attr.y]="data.tickXy"
+	   fill='black' font-size="12pt" >
+	  {{tag}}
+	</text>
+	
+	<text  *ngFor="let tag of data.tickYTag; let i=index"
+	   [attr.x]="data.tickYx" [attr.y]="data.tickYy[i]+6"
+	   fill='black' font-size="12pt" text-anchor="end">
+	  {{tag}}
+	</text>
+	 
+	 <g *ngFor="let value of data.values; let i=index">
+	
+		<rect *ngFor="let p of data[value]"
+		[attr.x]="p.x" [attr.y]="p.y"
+		[attr.width]="data.xwidth" [attr.height]="data.tickXy-p.y-20"
+		[attr.fill]="data.cols[value]" >
+	</rect>
+
+    <text [attr.x]='90+200*i' y='960' font-size='12pt' [attr.fill]='data.cols[value]'>{{data.werte[value]}}</text>        
+	  	
+	</g>
+	        
+    
+   </g>
+    
+</svg>
+
+</div>
+<br/>
+<div *ngIf="per != 'Monate'">
+<button id="ttm" *ngIf="per=='Tag'" 
+(click)="goto(data.super, 'up')">Monat</button>
+
+<button  id="ttl"   class='dirbutton'
+(click)="goto(data.vorher, 'sibl')">&lt;</button>
+
+<button   id="ttp"  class='dirbutton'
+(click)="goto(data.nachher, 'sibl')">&gt;</button>
+
+</div>

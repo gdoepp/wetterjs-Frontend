@@ -1,0 +1,12 @@
+
+rect.button {
+	fill: #bbb;
+}
+rect.button:hover {
+	fill: #ccc;
+}
+
+
+text {
+	pointer-events: none;
+}
