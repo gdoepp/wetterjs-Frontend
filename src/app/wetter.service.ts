@@ -18,7 +18,7 @@ export class WetterService {
 
   constructor( private http: HttpClient) {   }
 
-  private wetterUrl = 'http://gdlinux-cls-vpn:1337/wetter/';
+  private wetterUrl = 'wetter/';
 
   getStationen(): Observable<IStationListe> {
     return this.http.get<IStationListe>(this.wetterUrl + 'stats', httpOptions);
@@ -45,4 +45,10 @@ export class WetterService {
     return this.http.get<IWertListe>(this.wetterUrl + 'listMonat?monat=' + monjahr + '&stat=' + stat, httpOptions);
   }
 
+  update(stat: string) {
+    return this.http.post(this.wetterUrl + 'update/' + stat, '');
+  }
+  importHist(stat: string) {
+    return this.http.post(this.wetterUrl + 'import/' + stat, '');
+  }
 }

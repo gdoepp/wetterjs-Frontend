@@ -1,8 +1,57 @@
 //  (c) Gerhard Döppert, 2017, GNU GPL 3
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
-import { Zeit } from './Periode';
+import { WetterService } from './wetter.service';
+import { IWertListe } from './IWertListe';
+import { DataTransferService} from './datatransfer.service';
+import { Jahr, Monat, Tag, Zeit } from './Periode';
+
 
 export class DiagramBase {
+
+    public per: string;
+    public value: string;
+    public data;
+    protected perObj: Zeit;
+
+    constructor(private route: ActivatedRoute, private wetter: WetterService, private toParent: DataTransferService) {
+        this.data = {};
+    }
+
+    prepare() {}
+
+    init(offset: number) {
+        console.log('parent: ' + this.route.parent.component.valueOf());
+        this.route.paramMap.subscribe(params => {
+          const time = params.get('time');
+          const stat = params.get('stat');
+          this.per = params.get('per');
+          this.value = params.get('value');
+
+          return this.wetter.getListPeriode(time, this.per, stat).subscribe( data  => {
+                console.log('preparing list');
+                this.data = {};
+                this.data.rows = data;
+                let perObj: Zeit;
+
+                switch (this.per) {
+                case 'Monate': perObj = new Jahr(Number.parseInt(time)); break;
+                case 'Monat': perObj = new Monat(time); break;
+                case 'Tag': perObj = new Tag(time, offset); break;
+                case 'Tage': perObj = new Tag(time, offset); break;
+                default: console.log('error: periode not known - ' + this.per);
+                }
+
+                this.data.vorher = perObj.vorher;
+                this.data.nachher = perObj.nachher;
+                this.data.super = perObj.super;
+                this.perObj = perObj;
+                this.prepare();
+
+          });
+        });
+    }
 
     makeRange(dims, data, values, typ) {
 
@@ -157,137 +206,19 @@ export class DiagramBase {
 
     }
 
-    prepareTemp(obj, typ: Zeit) {
-        const tempCols = {
-            'temp_o': 'limegreen', 'temp_i1': 'orange', 'temp_o_min': 'blue', 'temp_o_absmin': 'violet',
-            'temp_o_max': 'red', 'temp_o_absmax': 'brown', 'temp_o_avg': 'green', 'temp_i1_avg': 'orange',
-            'temp_o1': 'limegreen',
-            'temp_i2': 'brown', 'temp_i2_avg': 'orange', 'temp_o2': 'seagreen', 'temp_i3': 'magenta', 'temp_i4': 'coral'
-        };
-
-        const tempWerte = {
-            'temp_o': 'Temp', 'temp_o_min': 'Temp Min', 'temp_o_absmin': 'Temp abs Min',
-            'temp_o_max': 'Temp Max', 'temp_o_absmax': 'Temp abs Max', 'temp_o_avg': 'Temp Mittel',
-            'temp_i1': 'Temp innen', 'temp_i1_avg': 'Temp innen Mittel',
-            'temp_i2': 'Temp innen 2', 'temp_i2_avg': 'Temp innen 2 Mittel',
-            'temp_o1': 'Temp1', 'temp_o2': 'Temp2', 'temp_i3': 'Temp innen 3', 'temp_i4': 'Temp innen 4'
-        };
-
-        const data = obj.rows;
-        obj.rows = undefined;
-
-        obj.values = [];
-
-        if (data.length > 0) {
-            for (const v in data[0]) {
-                if (tempWerte[v]) {
-                    obj.values.push(v);
-                }
-            }
+    goto(t: string, dir: string) {
+        console.log('emitting event goto... ' + t + ' ' + dir);
+        let per = this.per;
+        if (dir === 'up') {
+          if (this.per === 'Monat') { per = 'Monate'; }
+          if (this.per === 'Tag') { per = 'Monat'; }
         }
-
-        obj.cols = tempCols;
-        obj.werte = tempWerte;
-
-        const dims = { height: 900, width: 1600, x1: 90, minUnits: 10 };
-
-        this.makeRange(dims, data, obj.values, typ);
-
-        this.makeCurves(obj, data, dims, typ, obj.values);
-
-        this.makeAxes(obj, data, dims, typ);
-
-    }
-
-
-    preparePhen(obj, typ, feld) {
-
-        const phenCols = {
-            'hum_i': 'orange', 'hum_o': 'brown', 'pres': 'blue',
-            'precip': 'blue', 'sun': 'yellow', 'cloud': 'gray', 'lum_o': 'goldenrod', 'lum_i': 'darkorange'
-        };
-
-        const phenWerte = {
-            'hum': 'rel. Feuchte', 'hum_o': 'rel. Feuchte', 'hum_i': 'rel. Feuchte innen', 'pres': 'Luftdruck',
-            'precip': 'Niederschlag', 'sun': 'Sonne', 'cloud': 'Wolken', 'lum_o': 'Helligkeit', 'lum_i': 'Helligkeit innen'
-        };
-
-        const data = obj.rows;
-        obj.rows = undefined;
-
-        const dims = { height: 870, width: 1600, x1: 90, minUnits: 1, mny: undefined, mxy: undefined,
-            scalefn: undefined, scalefninv: undefined };
-
-        obj.cols = phenCols;
-        obj.werte = phenWerte;
-
-        const values = [];
-
-        if (feld === 'precip') { dims.mny = 0; dims.mxy = 5; }
-        if (feld === 'sun') { dims.mny = 0; dims.minUnits = (typ.heute ? 60 : 5); }
-        if (feld === 'cloud') { dims.mny = 0; dims.mxy = 8; }
-        if (feld === 'hum') {
-            dims.minUnits = 30;
-            values.push('hum_o');
-            if (data.length > 0 && data[data.length - 1]['hum_i']) { values.push('hum_i'); }
+        if (dir === 'down') {
+          if (this.per === 'Monate') { per = 'Monat'; }
+          if (this.per === 'Monat') { per = 'Tag'; }
         }
-        if (feld === 'lum') {
-            dims.minUnits = 3;
-            values.push('lum_o');
-            dims.scalefn = function (x) { return x > 1e-2 ? Math.log(x) / Math.log(10) : -2; }; // min: half moon
-            dims.scalefninv = function (x) {
-                return x === -2 ? '0' : Math.round(Math.pow(10, x) * Math.pow(10, Math.ceil(-x) + 2)) / Math.pow(10, Math.ceil(-x) + 2);
-            };
-            if (data.length > 0 && data[data.length - 1]['lum_i']) { values.push('lum_i'); }
-        }
-        if (feld === 'pres') { dims.minUnits = 10; }
+        console.log('per: ' + per);
+        this.toParent.sendToParent({time: t, value: this.value, per: per});
+      }
 
-        if (values.length === 0) { values.push(feld); }
-
-        this.makeRange(dims, data, values, typ);
-
-        if (feld === 'precip' || feld === 'cloud' || feld === 'sun') {
-            this.makeRects(obj, data, dims, typ, values);
-        } else {
-            this.makeCurves(obj, data, dims, typ, values);
-        }
-        obj.values = values;
-        this.makeAxes(obj, data, dims, typ);
-    }
-
-    prepareWind(obj, typ, feld) {
-
-        const windCols = { 'windf': 'cyan', 'windf_max': 'violet' };
-
-        const values = ['windf', 'windf_max'];
-
-        const data = obj.rows;
-        obj.rows = undefined;
-
-        // console.log('d.len:'+data.length);
-
-        const dims = { height: 870, width: 1600, x1: 90, minUnits: 5, mny: undefined, mxy: undefined,
-            scalefn: undefined, scalefninv: undefined };
-
-        dims.mny = 0;
-
-        this.makeRange(dims, data, values, typ);
-
-        this.makeRects(obj, data, dims, typ, values);
-
-        obj.windd = [];
-        obj.windv = [];
-
-        for (let k = 0; k < data.length; k++) {
-            const tv = data[k];
-            if (tv.windf) {
-                obj.windd.push(tv.windd[1]);
-                obj.windv.push(tv.windd[0] / tv.windf);
-            }
-        }
-
-        this.makeAxes(obj, data, dims, typ);
-        obj.values = values;
-        obj.cols = windCols;
-    }
 }

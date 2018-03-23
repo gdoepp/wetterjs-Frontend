@@ -31,12 +31,12 @@
      
 	<tr>
 	  <td>Einstieg Jahr</td>
-	  <td><button id='yl' ng-click="goList(jahr, 'Monate')">Liste</button></td>
+	  <td><button id='yl' (click)="goList(jahr, 'Monate')">Liste</button></td>
 	  
 	  <td *ngFor='let val of vals'>
 	     <button id='y{{values[val].id}}' 
 			 				(click)="goDP(jahr, val, 'Monate')">
-	          <img src='/assets/diagr_{{values[val].im}}.png'/>
+	          <img src='assets/diagr_{{values[val].im}}.png'/>
 	     </button>
 	  </td>
 	</tr>
@@ -46,7 +46,7 @@
 	  <td *ngFor='let val of vals'>
 	     <button id='s{{values[val].id}}' 
 			 			(click)="goDP(this.time, val, per)">
-	            <img src='/assets/diagr_{{values[val].im}}.png'/>
+	            <img src='assets/diagr_{{values[val].im}}.png'/>
 	     </button>
 	  </td>
 	</tr>
@@ -56,7 +56,7 @@
   	  <td *ngFor='let val of vals'>
 	     <button id='t{{values[val].id}}' 
 			 			(click)="goDP(0, val, 'Tag')">
-	            <img src='/assets/diagr_{{values[val].im}}.png'/>
+	            <img src='assets/diagr_{{values[val].im}}.png'/>
 	     </button>
 	  </td>
 	</tr>
@@ -64,15 +64,17 @@
 </table>
 <br/>
 <br/>
-<button ng-show='admin' (click)="update()" class='adminbutton'>update</button>
-<button ng-show='admin' (click)="importHist()" class='adminbutton'>import history</button>
-<div ng-show='!admin' class='adminbutton'>Eingeschränkter Modus: Gast</div>
+<button *ngIf="admin" (click)="update()" class='adminbutton'>update</button>
+<button *ngIf="admin" (click)="importHist()" class='adminbutton'>import history</button>
+<div *ngIf="!admin" class='adminbutton'>Eingeschränkter Modus: Gast</div>
 
  
 
 <br/>
-<router-outlet (gotoClicked) = "goDPevent($event)"></router-outlet>
+<router-outlet ></router-outlet>
+
 <br/>
+
 <br/>
 <br/>
 

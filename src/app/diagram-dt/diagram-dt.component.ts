@@ -1,13 +1,9 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-
-import 'rxjs/add/operator/switchMap';
+import { Component, OnInit} from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 import { WetterService } from '../wetter.service';
-import { IWertListe } from '../IWertListe';
 import { DiagramBase } from '../DiagramBase';
 import { DataTransferService} from '../datatransfer.service';
-import { Jahr, Monat, Tag, Zeit } from '../Periode';
 
 @Component({
   selector: 'app-diagram-dt',
@@ -16,61 +12,59 @@ import { Jahr, Monat, Tag, Zeit } from '../Periode';
 })
 export class PeriodeDtComponent extends DiagramBase implements OnInit {
 
-  private data;
-  private per: string;
-
-  constructor(private route: ActivatedRoute, private wetter: WetterService, private toParent: DataTransferService) {
-    super();
-    this.data = {};
+  constructor(route: ActivatedRoute, wetter: WetterService, toParent: DataTransferService) {
+    super(route, wetter, toParent);
   }
+
+  prepare() {
+    const obj = this.data;
+    const typ = this.perObj;
+
+    const tempCols = {
+        'temp_o': 'limegreen', 'temp_i1': 'orange', 'temp_o_min': 'blue', 'temp_o_absmin': 'violet',
+        'temp_o_max': 'red', 'temp_o_absmax': 'brown', 'temp_o_avg': 'green', 'temp_i1_avg': 'orange',
+        'temp_o1': 'limegreen',
+        'temp_i2': 'brown', 'temp_i2_avg': 'orange', 'temp_o2': 'seagreen', 'temp_i3': 'magenta', 'temp_i4': 'coral'
+    };
+
+    const tempWerte = {
+        'temp_o': 'Temp', 'temp_o_min': 'Temp Min', 'temp_o_absmin': 'Temp abs Min',
+        'temp_o_max': 'Temp Max', 'temp_o_absmax': 'Temp abs Max', 'temp_o_avg': 'Temp Mittel',
+        'temp_i1': 'Temp innen', 'temp_i1_avg': 'Temp innen Mittel',
+        'temp_i2': 'Temp innen 2', 'temp_i2_avg': 'Temp innen 2 Mittel',
+        'temp_o1': 'Temp1', 'temp_o2': 'Temp2', 'temp_i3': 'Temp innen 3', 'temp_i4': 'Temp innen 4'
+    };
+
+    const data = obj.rows;
+    obj.rows = undefined;
+
+    obj.values = [];
+
+    if (data.length > 0) {
+        for (const v in data[0]) {
+            if (tempWerte[v]) {
+                obj.values.push(v);
+            }
+        }
+    }
+
+    obj.cols = tempCols;
+    obj.werte = tempWerte;
+
+    const dims = { height: 900, width: 1600, x1: 90, minUnits: 10 };
+
+    this.makeRange(dims, data, obj.values, typ);
+
+    this.makeCurves(obj, data, dims, typ, obj.values);
+
+    this.makeAxes(obj, data, dims, typ);
+
+}
 
   ngOnInit() {
-    console.log('parent: ' + this.route.parent.component.valueOf());
-    this.route.paramMap.subscribe(params => {
-      const time = params.get('time');
-      const stat = params.get('stat');
-      this.per = params.get('per');
 
-      const func = this.wetter['getList' + this.per];
+    this.init(0.5);
 
-      return this.wetter.getListPeriode(time, this.per, stat).subscribe( data  => {
-        console.log('preparing list');
-        this.data = {};
-        this.data.rows = data;
-        let perObj: Zeit;
-
-        switch (this.per) {
-          case 'Monate': perObj = new Jahr(Number.parseInt(time)); break;
-          case 'Monat': perObj = new Monat(time); break;
-          case 'Tag': perObj = new Tag(time, 1); break;
-          case 'Tage': perObj = new Tag(time, 1); break;
-          default: console.log('error: periode not known - ' + this.per);
-        }
-
-        this.data.vorher = perObj.vorher;
-        this.data.nachher = perObj.nachher;
-        this.data.super = perObj.super;
-
-        this.prepareTemp(this.data, perObj);
-      });
-
-    });
-
-  }
-
-  goto(t: string, dir: string) {
-    console.log('emitting event goto... ' + t + ' ' + dir);
-    let per = this.per;
-    if (dir === 'up') {
-      if (this.per === 'Monat') { per = 'Monate'; }
-      if (this.per === 'Tag') { per = 'Monat'; }
-    }
-    if (dir === 'down') {
-      if (this.per === 'Monate') { per = 'Monat'; }
-      if (this.per === 'Monat') { per = 'Tag'; }
-    }
-    console.log('per: ' + per);
-    this.toParent.sendToParent({time: t, value: 'temp', per: per});
   }
 
 }

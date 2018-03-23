@@ -1,13 +1,9 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-
-import 'rxjs/add/operator/switchMap';
+import { ActivatedRoute } from '@angular/router';
 
 import { WetterService } from '../wetter.service';
-import { IWertListe } from '../IWertListe';
 import { DiagramBase } from '../DiagramBase';
 import { DataTransferService} from '../datatransfer.service';
-import { Jahr, Monat, Tag, Zeit } from '../Periode';
 
 @Component({
   selector: 'app-diagram-dp',
@@ -16,63 +12,73 @@ import { Jahr, Monat, Tag, Zeit } from '../Periode';
 })
 export class PeriodeDpComponent extends DiagramBase implements OnInit {
 
-  private value;
-  private data;
-  private per: string;
-
-  constructor(private route: ActivatedRoute, private wetter: WetterService, private toParent: DataTransferService) {
-    super();
-    this.data = {};
+  constructor(route: ActivatedRoute, wetter: WetterService, toParent: DataTransferService) {
+    super(route, wetter, toParent);
+    this.data = {werte: {}};
   }
 
   ngOnInit() {
-    console.log('parent: ' + this.route.parent.component.valueOf());
-    this.route.paramMap.subscribe(params => {
-      const time = params.get('time');
-      const stat = params.get('stat');
-      this.per = params.get('per');
-      this.value = params.get('value');
-
-      const func = this.wetter['getList' + this.per];
-
-      return this.wetter.getListPeriode(time, this.per, stat).subscribe( data  => {
-        console.log('preparing list');
-        this.data = {};
-        this.data.rows = data;
-        let perObj: Zeit;
-
-        switch (this.per) {
-          case 'Monate': perObj = new Jahr(Number.parseInt(time)); break;
-          case 'Monat': perObj = new Monat(time); break;
-          case 'Tag': perObj = new Tag(time, 1); break;
-          case 'Tage': perObj = new Tag(time, 1); break;
-          default: console.log('error: periode not known - ' + this.per);
-        }
-
-        this.data.vorher = perObj.vorher;
-        this.data.nachher = perObj.nachher;
-        this.data.super = perObj.super;
-
-        this.preparePhen(this.data, perObj, this.value);
-      });
-
-    });
-
+    this.init(0.5);
   }
 
-  goto(t: string, dir: string) {
-    console.log('emitting event goto... ' + t + ' ' + dir);
-    let per = this.per;
-    if (dir === 'up') {
-      if (this.per === 'Monat') { per = 'Monate'; }
-      if (this.per === 'Tag') { per = 'Monat'; }
+
+  prepare() {
+
+    const obj = this.data;
+    const typ = this.perObj;
+    const feld = this.value;
+
+    const phenCols = {
+        'hum_i': 'orange', 'hum_o': 'brown', 'pres': 'blue',
+        'precip': 'blue', 'sun': 'yellow', 'cloud': 'gray', 'lum_o': 'goldenrod', 'lum_i': 'darkorange'
+    };
+
+    const phenWerte = {
+        'hum': 'rel. Feuchte', 'hum_o': 'rel. Feuchte', 'hum_i': 'rel. Feuchte innen', 'pres': 'Luftdruck',
+        'precip': 'Niederschlag', 'sun': 'Sonne', 'cloud': 'Wolken', 'lum': 'Helligkeit', 'lum_o': 'Helligkeit', 'lum_i': 'Helligkeit innen'
+    };
+
+    const data = obj.rows;
+    obj.rows = undefined;
+
+    const dims = { height: 870, width: 1600, x1: 90, minUnits: 1, mny: undefined, mxy: undefined,
+        scalefn: undefined, scalefninv: undefined };
+
+    obj.cols = phenCols;
+    obj.werte = phenWerte;
+
+    const values = [];
+
+    if (feld === 'precip') { dims.mny = 0; dims.mxy = 5; }
+    if (feld === 'sun') { dims.mny = 0; dims.minUnits = ( this.per === 'Tag'  ? 60 : 5); }
+    if (feld === 'cloud') { dims.mny = 0; dims.mxy = 8; }
+    if (feld === 'hum') {
+        dims.minUnits = 30;
+        values.push('hum_o');
+        if (data.length > 0 && data[data.length - 1]['hum_i']) { values.push('hum_i'); }
     }
-    if (dir === 'down') {
-      if (this.per === 'Monate') { per = 'Monat'; }
-      if (this.per === 'Monat') { per = 'Tag'; }
+    if (feld === 'lum') {
+        dims.minUnits = 3;
+        values.push('lum_o');
+        dims.scalefn = function (x) { return x > 1e-2 ? Math.log(x) / Math.log(10) : -2; }; // min: half moon
+        dims.scalefninv = function (x) {
+            return x === -2 ? '0' : Math.round(Math.pow(10, x) * Math.pow(10, Math.ceil(-x) + 2)) / Math.pow(10, Math.ceil(-x) + 2);
+        };
+        if (data.length > 0 && data[data.length - 1]['lum_i']) { values.push('lum_i'); }
     }
-    console.log('per: ' + per);
-    this.toParent.sendToParent({time: t, value: this.value, per: per});
+    if (feld === 'pres') { dims.minUnits = 10; }
+
+    if (values.length === 0) { values.push(feld); }
+
+    this.makeRange(dims, data, values, typ);
+
+    if (feld === 'precip' || feld === 'cloud' || feld === 'sun') {
+        this.makeRects(obj, data, dims, typ, values);
+    } else {
+        this.makeCurves(obj, data, dims, typ, values);
+    }
+    obj.values = values;
+    this.makeAxes(obj, data, dims, typ);
   }
 
 }

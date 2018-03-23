@@ -10,8 +10,8 @@
 	    <th  *ngFor="let colgrname of colgrname, let i=index" [attr.colspan]='colgrlen[i]'>{{colgrname}}</th>
 	  </tr>
 	  <tr class='wettertab' >
-	    <th [attr.ts-criteria]="time_t">Zeit</th>
-	    <th [attr.ts-criteria]="col"  *ngFor="let col of values" >{{werte[col]}}</th>
+	    <th >Zeit</th>
+	    <th  *ngFor="let col of values" >{{werte[col]}}</th>
 	    </tr>
 	    <tr>
 	  

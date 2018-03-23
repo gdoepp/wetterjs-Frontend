@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TagDtComponent } from './tag-dt.component';
+import { ListeComponent } from './liste.component';
 
-describe('TagDtComponent', () => {
-  let component: TagDtComponent;
-  let fixture: ComponentFixture<TagDtComponent>;
+describe('ListeComponent', () => {
+  let component: ListeComponent;
+  let fixture: ComponentFixture<ListeComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TagDtComponent ]
+      declarations: [ ListeComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TagDtComponent);
+    fixture = TestBed.createComponent(ListeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

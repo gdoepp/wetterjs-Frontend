@@ -1,0 +1,46 @@
+<!--  (c) Gerhard Döppert, 2017 -->
+
+<h2>Wetter {{title}}</h2>
+<table border='1' ts-wrapper>
+	<thead>
+	  <tr class='wettertab'>
+	  <th></th>
+	  <th *ngFor="let colgrname of colgrname; let i=index" [attr.colspan]="colgrlen[i]">{{colgrname}}</th>
+	  <th *ngIf="per != 'Tag'" >weiter</th>
+	  </tr>
+	  
+	  
+	  <tr class='wettertab'>
+	    <th >{{name}}</th>
+	    <th   *ngFor="let col of values" >{{werte[col]}}</th>
+	    <th *ngIf="per != 'Tag'" >alles</th>
+	  </tr>
+	</thead>
+	<tbody >	
+	<tr  class='wettertab' *ngFor="let wert of data.rows" ts-repeat>
+	  <td >{{wert[index_name]}}</td>
+	  <td class='tab' *ngFor="let col of values"   >{{wert[col]}}</td>
+	  
+	  <td *ngIf="per != 'Tag'" class='tab'><button (click)="goto(wert[index_id],'down')"
+	         class='button-small'>Liste</button></td>
+	  
+	  </tr>
+	</tbody>  	    
+</table>
+
+<button *ngIf="per == 'Monate'" (click)="downloadMonate()">CSV herunterladen</button>
+<button *ngIf="per == 'Monat'" (click)="downloadMonat()">CSV herunterladen</button>
+<button *ngIf="per == 'Tag'" (click)="downloadTag()">CSV herunterladen</button>
+
+<div *ngIf="per != 'Monate'">
+  <button id="ttm" *ngIf="per=='Tag'" 
+  (click)="goto(data.super, 'up')">Monat</button>
+  
+  <button  id="ttl"   class='dirbutton'
+  (click)="goto(data.vorher, 'sibl')">&lt;</button>
+  
+  <button   id="ttp"  class='dirbutton'
+  (click)="goto(data.nachher, 'sibl')">&gt;</button>
+  
+	</div>
+	

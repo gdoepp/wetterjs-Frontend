@@ -29,12 +29,12 @@ export class TableBase {
   'hum_o': 'außen', 'hum_i': 'innen', 'pres': 'außen', 'lum_o': 'außen', 'lum_i': 'innen', 'temp_i4': 'innen',
   'precip': 'außen', 'sun': 'außen', 'cloud': 'außen', 'windd': 'außen', 'windf': 'außen', 'windf_max': 'außen'};
 
-  protected stat: number;
-  protected data: IWertListe = new IWertListe;
-  protected values: string[] = [];
-  protected colgrname: string[] = [];
-  protected colgrlen: number[] = [];
-  protected werte: string[] = [];
+  public stat: number;
+  public data: IWertListe = new IWertListe;
+  public values: string[] = [];
+  public colgrname: string[] = [];
+  public colgrlen: number[] = [];
+  public werte: string[] = [];
 
 
  prepareList(data: IWertListe) {

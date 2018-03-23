@@ -10,3 +10,12 @@ rect.button:hover {
 text {
 	pointer-events: none;
 }
+
+button, select {
+	font-size: 120%;
+	height: 80px;
+	min-width: 100px;
+}
+button.dirbutton {
+	font-size: 24px;
+}

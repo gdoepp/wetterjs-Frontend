@@ -16,40 +16,46 @@ export class MainComponent implements OnInit {
 
   constructor(private wetter: WetterService, private router: Router,
         fromChild: DataTransferService) {
+
     this.time = '';
+
     fromChild.fromChild.subscribe(data => {
-      console.log('from child: ' + data);
-      if (data.time) {
-        this.goDP(data.time, data.value, data.per);
+      console.log('from child: ' + data.value);
+      if (data.value) {
+        if (data.value === 'List') {
+          this.goList(data.time, data.per);
+        } else {
+          this.goDP(data.time, data.value, data.per);
+        }
       }
     });
   }
 
-  private stationListe: IStationListe = new IStationListe() ;
-  private jahre: number[];
-  private jahr: number;
-  private stat: number;
-  private statStr: string;
-  private admin: number;
-  private station: string;
-  private time: string;
-  private value: string;
-  private tag: number;
-  private monat: number;
-  private per: string;
-  private perObj: Zeit;
+  public stationListe: IStationListe = new IStationListe() ;
+  public jahre: number[];
+  public jahr: number;
+  public stat: number;
+  public statStr: string;
+  public admin: number;
+  public station: string;
+  public time: string;
+  public value: string;
+  public tag: number;
+  public monat: number;
+  public per: string;
+  protected perObj: Zeit;
 
-  private values = {'temp': {name: 'Temperatur', func: 'T', offset: 0.5, id: 't', im: 'c'},
-  'pres': {name: 'Luftdruck', func: 'P', offset: 0.5, id: 'p', im: 'c2'},
-    'hum': {name: 'Luftfeuchte', func: 'H', offset: 0.5, id: 'h', im: 'c1'},
-    'precip': {name: 'Niederschlag', func: 'R', offset: 0, id: 'i', im: 'rb'},
-    'cloud': {name: 'Wolken', func: 'N', offset: 0, id: 'c', im: 'rg'},
-    'lum': {name: 'Helligkeit', func: 'L', offset: 0.5, id: 'l', im: 'c3'},
-    'sun': {name: 'Sonne', func: 'S', offset: 0, id: 's', im: 'ry'},
-    'wind': {name: 'Wind', func: 'F', offset: 0, id: 'w', im: 'rv'}
+  public values = {'temp': {name: 'Temperatur', func: 'T', id: 't', im: 'c'},
+  'pres': {name: 'Luftdruck', func: 'P', id: 'p', im: 'c2'},
+    'hum': {name: 'Luftfeuchte', func: 'H', id: 'h', im: 'c1'},
+    'precip': {name: 'Niederschlag', func: 'R', id: 'i', im: 'rb'},
+    'cloud': {name: 'Wolken', func: 'N', id: 'c', im: 'rg'},
+    'lum': {name: 'Helligkeit', func: 'L', id: 'l', im: 'c3'},
+    'sun': {name: 'Sonne', func: 'S', id: 's', im: 'ry'},
+    'wind': {name: 'Wind', func: 'F', id: 'w', im: 'rv'}
   };
 
-  private vals = [ 'temp', 'hum', 'pres', 'lum'];
+  public vals = [ 'temp', 'hum', 'pres', 'lum'];
 
   ngOnInit() {
      this.wetter.getStationen().subscribe( data  => {
@@ -102,7 +108,7 @@ export class MainComponent implements OnInit {
     if (this.value === '-') {
       this.go('auswahl', {stat: this.stat});
     } else {
-      this.go('.', {time: this.time, stat: this.stat});
+      this.go('.', {time: this.time, stat: this.stat, per: this.per});
     }
   }
 
@@ -126,7 +132,7 @@ export class MainComponent implements OnInit {
     if (this.value === '-') {
         this.go('auswahl', {stat: this.stat});
     } else {
-      this.go('.', {time: this.time, stat: this.stat});
+      this.go('.', {time: this.time, stat: this.stat, per: this.per});
     }
   }
 
@@ -154,7 +160,7 @@ export class MainComponent implements OnInit {
     this.time = time;
     this.per = per;
     this.go3('listPeriodeD' + this.values[value].func, {time: time, stat: this.stat,
-      per: this.per, value: value, station: this.station, offset: this.values[value].offset}, {reload: true});
+      per: this.per, value: value, station: this.station }, {reload: true});
   }
 
   goList(time, per) {
@@ -162,27 +168,7 @@ export class MainComponent implements OnInit {
     this.time = time;
     this.per = per;
     this.value = '';
-    this.go('list' + per, {time: time, stat: this.stat});
-  }
-
-  update(state, value) {
-    this.go('update', {stat: this.stat});
-    this.value = '-';
-  }
-  importHist(state, value) {
-    this.go('import', {stat: this.stat});
-    this.value = '-';
-  }
-
-  downloadMonate() {
-    location.assign('wetter/downloadMonate?jahr=' + this.time + '&stat=' + this.stat);
-  }
-
-  downloadMonat() {
-    location.assign('wetter/downloadMonat?monat=' + this.time + '&stat=' + this.stat);
-  }
-  downloadTag() {
-    location.assign('wetter/downloadTag?tag=' + this.time + '&stat=' + this.stat);
+    this.go('list' + per, {time: time, stat: this.stat, per: per});
   }
 
   go(path: string, args: object) {
@@ -193,6 +179,16 @@ export class MainComponent implements OnInit {
     console.log('go to ' + path + ' args: ' + args);
     this.router.navigate([path, args]);
   }
+
+  update() {
+    this.go('update', {stat: this.stat, operation: 'update'});
+    this.value = '-';
+  }
+  importHist() {
+    this.go('update', {stat: this.stat, operation: 'importHist'});
+    this.value = '-';
+  }
+
 
 }
 

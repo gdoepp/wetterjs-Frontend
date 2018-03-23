@@ -29,3 +29,6 @@ rect.button:hover {
 	fill: #ccc;
 }
 
+thead tr th {
+	text-align: center;
+}

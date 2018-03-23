@@ -15,6 +15,7 @@ import {TableBase} from '../TableBase';
 
 export class AuswahlComponent extends TableBase implements OnInit {
 
+  public tag: string;
   constructor(private wetter: WetterService, private route: ActivatedRoute) {
     super();
    }
@@ -25,6 +26,9 @@ export class AuswahlComponent extends TableBase implements OnInit {
         console.log('preparing list');
         this.prepareList(data);
         this.data = data;
+        if (data.rows.length > 0) {
+          this.tag = data.rows[0].tag;
+        }
 
    }));
   }
