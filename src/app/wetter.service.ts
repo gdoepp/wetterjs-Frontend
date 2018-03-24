@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 
 import {IStationListe} from './IStationListe';
 import {IWertListe} from './IWertListe';
-
+import { environment } from '../environments/environment';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json'})
@@ -18,7 +18,7 @@ export class WetterService {
 
   constructor( private http: HttpClient) {   }
 
-  private wetterUrl = 'wetter/';
+  public wetterUrl = environment.baseUrl;
 
   getStationen(): Observable<IStationListe> {
     return this.http.get<IStationListe>(this.wetterUrl + 'stats', httpOptions);
@@ -50,5 +50,7 @@ export class WetterService {
   }
   importHist(stat: string) {
     return this.http.post(this.wetterUrl + 'import/' + stat, '');
+
   }
+
 }

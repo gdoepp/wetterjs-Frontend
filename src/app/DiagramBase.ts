@@ -1,12 +1,11 @@
 //  (c) Gerhard Döppert, 2017, GNU GPL 3
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 import { WetterService } from './wetter.service';
 import { IWertListe } from './IWertListe';
 import { DataTransferService} from './datatransfer.service';
 import { Jahr, Monat, Tag, Zeit } from './Periode';
-
 
 export class DiagramBase {
 
@@ -29,7 +28,7 @@ export class DiagramBase {
           this.per = params.get('per');
           this.value = params.get('value');
 
-          return this.wetter.getListPeriode(time, this.per, stat).subscribe( data  => {
+          this.wetter.getListPeriode(time, this.per, stat).subscribe( data  => {
                 console.log('preparing list');
                 this.data = {};
                 this.data.rows = data;

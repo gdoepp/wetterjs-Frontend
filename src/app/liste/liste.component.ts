@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 import { WetterService } from '../wetter.service';
@@ -6,6 +6,8 @@ import { DataTransferService} from '../datatransfer.service';
 import {IWertListe} from '../IWertListe';
 import {TableBase} from '../TableBase';
 import { Jahr, Monat, Tag, Zeit } from '../Periode';
+import { Subscription } from 'rxjs/Subscription';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-liste',
@@ -21,12 +23,13 @@ export class ListeComponent extends TableBase implements OnInit {
   public index_name: string;
   public name: string;
   public title: string;
+  private wetterUrl = environment.baseUrl;
 
   constructor(private wetter: WetterService, private route: ActivatedRoute, private toParent: DataTransferService) {
     super();
    }
 
-  ngOnInit() {
+   ngOnInit() {
 
     this.route.paramMap.subscribe(params => {
       this.time = params.get('time');
@@ -81,14 +84,14 @@ export class ListeComponent extends TableBase implements OnInit {
   }
 
   downloadMonate() {
-    window.location.href = '/wetter/downloadMonate?jahr=' + this.time + '&stat=' + this.stat;
+    window.location.href = this.wetterUrl + 'downloadMonate?jahr=' + this.time + '&stat=' + this.stat;
   }
 
   downloadMonat() {
-    window.location.href = '/wetter/downloadMonat?monat=' + this.time + '&stat=' + this.stat;
+    window.location.href = this.wetterUrl + 'downloadMonat?monat=' + this.time + '&stat=' + this.stat;
   }
   downloadTag() {
-    window.location.href = '/wetter/downloadTag?tag=' + this.time + '&stat=' + this.stat;
+    window.location.href = this.wetterUrl + 'downloadTag?tag=' + this.time + '&stat=' + this.stat;
   }
 
 }

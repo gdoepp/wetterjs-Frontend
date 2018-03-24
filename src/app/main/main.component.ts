@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { Router } from '@angular/router';
 
@@ -6,21 +6,21 @@ import { WetterService } from '../wetter.service';
 import { IStationListe } from '../IStationListe';
 import { Jahr, Monat, Tag, Zeit } from '../Periode';
 import { DataTransferService } from '../datatransfer.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css']
 })
-export class MainComponent implements OnInit {
+export class MainComponent implements OnInit, OnDestroy {
 
   constructor(private wetter: WetterService, private router: Router,
         fromChild: DataTransferService) {
 
     this.time = '';
 
-    fromChild.fromChild.subscribe(data => {
-      console.log('from child: ' + data.value);
+    this.subscribed = fromChild.fromChild.subscribe(data => {
       if (data.value) {
         if (data.value === 'List') {
           this.goList(data.time, data.per);
@@ -44,6 +44,7 @@ export class MainComponent implements OnInit {
   public monat: number;
   public per: string;
   protected perObj: Zeit;
+  private subscribed: Subscription;
 
   public values = {'temp': {name: 'Temperatur', func: 'T', id: 't', im: 'c'},
   'pres': {name: 'Luftdruck', func: 'P', id: 'p', im: 'c2'},
@@ -72,6 +73,10 @@ export class MainComponent implements OnInit {
         this.value = 'auswahl';
         this.updateJahre(this.stationListe);
      });
+  }
+
+  ngOnDestroy() {
+    if (this.subscribed) { this.subscribed.unsubscribe(); }
   }
 
   updateJahre(data: IStationListe)  {
