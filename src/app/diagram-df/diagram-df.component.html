@@ -32,7 +32,7 @@
 	<text  *ngFor="let tag of data.tickYTag; let i=index"
 	   [attr.x]="data.tickYx" [attr.y]="data.tickYy[i]+6"
 	   fill='black' font-size="12pt" text-anchor="end">
-	  {{tag}}
+	  {{tag}} {{data.unit}}
 	</text>
 	 
 	

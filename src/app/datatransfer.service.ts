@@ -1,3 +1,5 @@
+// (c) Gerhard Döppert, 2018, GNU GPL 3
+
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Injectable } from '@angular/core';
 

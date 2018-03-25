@@ -13,9 +13,22 @@ text {
 
 button, select {
 	font-size: 120%;
-	height: 80px;
-	min-width: 100px;
+	height: 50px;
+	min-width: 60px;
 }
 button.dirbutton {
 	font-size: 24px;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    visibility: hidden;
+}
+
+svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
 }

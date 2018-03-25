@@ -1,3 +1,5 @@
+// (c) Gerhard Döppert, 2018, GNU GPL 3
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { Router } from '@angular/router';
@@ -113,7 +115,7 @@ export class MainComponent implements OnInit, OnDestroy {
     if (this.value === '-') {
       this.go('auswahl', {stat: this.stat});
     } else {
-      this.go('.', {time: this.time, stat: this.stat, per: this.per});
+      this.go('.', {time: this.time, stat: this.stat, per: this.per, value: this.value});
     }
   }
 
@@ -137,7 +139,7 @@ export class MainComponent implements OnInit, OnDestroy {
     if (this.value === '-') {
         this.go('auswahl', {stat: this.stat});
     } else {
-      this.go('.', {time: this.time, stat: this.stat, per: this.per});
+      this.go('.', {time: this.time, stat: this.stat, per: this.per, value: this.value});
     }
   }
 

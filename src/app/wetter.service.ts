@@ -1,3 +1,5 @@
+// (c) Gerhard Döppert, 2018, GNU GPL 3
+
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';

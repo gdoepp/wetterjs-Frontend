@@ -73,7 +73,7 @@ export class DiagramBase {
             }
         }
 
-        if (dims.minUnits && dims.mxy >= dims.mny && dims.mxy - dims.mny < dims.minUnits) {
+        if (dims.minUnits && dims.mxy > dims.mny && dims.mxy - dims.mny < dims.minUnits) {
             if (center) {
                 const rest = dims.minUnits - (dims.mxy - dims.mny);
                 dims.mny = dims.mny - rest / 2;
@@ -81,6 +81,8 @@ export class DiagramBase {
             } else {
                 dims.mxy = dims.mny + dims.minUnits;
             }
+            if (dims.mxyLimit && dims.mxy > dims.mxyLimit) { dims.mxy = dims.mxyLimit; }
+            if (dims.mnyLimit && dims.mny < dims.mnyLimit) { dims.mny = dims.mnyLimit; }
         }
 
         dims.dmy = dims.height * 0.99 / (dims.scalefn(dims.mxy) - dims.scalefn(dims.mny));

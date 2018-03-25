@@ -1,3 +1,5 @@
+// (c) Gerhard Döppert, 2018, GNU GPL 3
+
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
@@ -32,6 +34,8 @@ export class PeriodeDfComponent extends DiagramBase implements OnInit {
 
     const data = obj.rows;
     obj.rows = undefined;
+
+    this.data.unit = 'm/s';
 
     const dims = { height: 870, width: 1600, x1: 90, minUnits: 5, mny: undefined, mxy: undefined,
         scalefn: undefined, scalefninv: undefined };

@@ -1,9 +1,12 @@
+// (c) Gerhard Döppert, 2018, GNU GPL 3
+
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { WetterService } from '../wetter.service';
 import { DiagramBase } from '../DiagramBase';
 import { DataTransferService} from '../datatransfer.service';
+import { Tag } from '../Periode';
 
 @Component({
   selector: 'app-diagram-dp',
@@ -37,15 +40,22 @@ export class PeriodeDpComponent extends DiagramBase implements OnInit {
         'hum': 'rel. Feuchte', 'hum_o': 'rel. Feuchte', 'hum_i': 'rel. Feuchte innen', 'pres': 'Luftdruck',
         'precip': 'Niederschlag', 'sun': 'Sonne', 'cloud': 'Wolken', 'lum': 'Helligkeit', 'lum_o': 'Helligkeit', 'lum_i': 'Helligkeit innen'
     };
+    const units = {
+        'hum': '%', 'hum_o': '%', 'hum_i': '%', 'pres': 'hPa',
+        'precip': 'mm', 'sun': 'h', 'cloud': '/8', 'lum': '', 'lum_o': '', 'lum_i': ''
+    };
 
     const data = obj.rows;
     obj.rows = undefined;
 
     const dims = { height: 870, width: 1600, x1: 90, minUnits: 1, mny: undefined, mxy: undefined,
-        scalefn: undefined, scalefninv: undefined };
+        mxyLimit: undefined, mnyLimit: undefined, scalefn: undefined, scalefninv: undefined };
 
     obj.cols = phenCols;
     obj.werte = phenWerte;
+
+    this.data.unit = units[feld];
+    if (typ instanceof Tag && feld === 'sun') { this.data.unit = 'min'; }
 
     const values = [];
 
@@ -54,6 +64,8 @@ export class PeriodeDpComponent extends DiagramBase implements OnInit {
     if (feld === 'cloud') { dims.mny = 0; dims.mxy = 8; }
     if (feld === 'hum') {
         dims.minUnits = 30;
+        dims.mxyLimit = 100;
+        dims.mnyLimit = 0;
         values.push('hum_o');
         if (data.length > 0 && data[data.length - 1]['hum_i']) { values.push('hum_i'); }
     }

@@ -1,3 +1,5 @@
+// (c) Gerhard Döppert, 2018, GNU GPL 3
+
 export class Zeit {
 
     public  monName: string[] = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli',
