@@ -179,13 +179,15 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   go(path: string, args: object) {
-    console.log('go to ' + path + ' args: ' + args);
     this.router.navigate([path, args]);
   }
   go3(path: string, args: object, opts: object) {
-    console.log('go to ' + path + ' args: ' + args);
-    this.router.navigate([path, args]);
+    this.router.navigate([path, args], opts);
   }
+  reload() {
+    location.reload();
+  }
+
 
   update() {
     this.go('update', {stat: this.stat, operation: 'update'});

@@ -68,6 +68,7 @@
 <br/>
 <button *ngIf="admin" (click)="update()" class='adminbutton'>update</button>
 <button *ngIf="admin" (click)="importHist()" class='adminbutton'>import history</button>
+<button (click)="reload()" >Neu laden</button>
 <div *ngIf="!admin" class='adminbutton'>Eingeschränkter Modus: Gast</div>
 
  
