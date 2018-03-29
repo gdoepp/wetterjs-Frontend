@@ -16,7 +16,7 @@ const httpOptions = {
 @Injectable()
 export class WetterService {
 
-  private perName = {'Monate': 'jahr', 'Monat': 'monat', 'Tag': 'tag' };
+  private perName = {'Monate': 'jahr', 'Monat': 'monat', 'Tag': 'tag', 'Tage': 'tag1' };
 
   constructor( private http: HttpClient) {   }
 
@@ -30,21 +30,42 @@ export class WetterService {
     console.log('wetter.auswahl: ' + stat);
     return this.http.get<IWertListe>(this.wetterUrl + 'Auswahl?stat=' + stat, httpOptions);
   }
+  formatDate(tag: Date) {
+    return tag.getDate() + '.' + (tag.getMonth() + 1) +  '.' + (tag.getFullYear());
+  }
+  toDay(tag) {
+    if (tag && tag !== 'undefined' && tag !== 0) {
+      let tg = tag.split('.');
+      if (tg.length !== 3) {
+        tg = tag.split('-'); tag = new Date(tg[0], tg[1] - 1, tg[2]);
+      } else {
+        tag = new Date(tg[2], tg[1] - 1, tg[0]);
+      }
+    } else {
+      tag = new Date();
+    }
+    return tag;
+  }
 
-  getListPeriode(time: string, per: string, stat: string): Observable<IWertListe> {
+  getListPeriode(time: string, per: string, stat: number): Observable<IWertListe> {
     console.log('list' + per + ', Per: ' + time + ', stat: ' + stat);
-    return this.http.get<IWertListe>(this.wetterUrl + 'list' + per +
-    '?' + this.perName[per] + '=' + time + '&stat=' + stat, httpOptions);
-  }
 
-  getListMonate(jahr: string, stat: string): Observable<IWertListe> {
-    console.log('listMonate, jahr: ' + jahr + ', stat: ' + stat);
-    return this.http.get<IWertListe>(this.wetterUrl + 'listMonate?jahr=' + jahr + '&stat=' + stat, httpOptions);
-  }
+    let params: string;
 
-  getListMonat(monjahr: string, stat: string): Observable<IWertListe> {
-    console.log('listMonat, : ' + monjahr + ', stat: ' + stat);
-    return this.http.get<IWertListe>(this.wetterUrl + 'listMonat?monat=' + monjahr + '&stat=' + stat, httpOptions);
+    if (per === 'Tage') {
+      per = 'Tag';
+      const tag1 = this.toDay(time);
+      tag1.setDate(tag1.getDate() - 1);
+      const tag2 = this.toDay(time);
+      tag2.setDate(tag2.getDate() + 1);
+      params = 'tag1=' + this.formatDate(tag1) + '&tag2=' + this.formatDate(tag2);
+    } else {
+      params = this.perName[per] + '=' + time;
+    }
+    if (per !== 'Auswahl') { per = 'list' + per; }
+    return this.http.get<IWertListe>(this.wetterUrl + per +
+    '?' + params + '&stat=' + stat, httpOptions);
+
   }
 
   update(stat: string) {

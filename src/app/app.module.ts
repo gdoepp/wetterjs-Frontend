@@ -17,7 +17,7 @@ import { ListeComponent } from './liste/liste.component';
 import { UpdateComponent } from './update/update.component';
 
 const appRoutes: Routes = [
-  { path: '', redirectTo: '/auswahl;stat=0', pathMatch: 'full' },
+  { path: '', redirectTo: '/auswahl;stat=0;per=Auswahl', pathMatch: 'full' },
   { path: 'auswahl', component: AuswahlComponent },
   { path: 'update', component: UpdateComponent },
   { path: 'listPeriodeDT', component: PeriodeDtComponent },
@@ -28,9 +28,7 @@ const appRoutes: Routes = [
   { path: 'listPeriodeDH', component: PeriodeDpComponent },
   { path: 'listPeriodeDP', component: PeriodeDpComponent },
   { path: 'listPeriodeDF', component: PeriodeDfComponent },
-  { path: 'listMonate', component: ListeComponent },
-  { path: 'listMonat', component: ListeComponent },
-  { path: 'listTag', component: ListeComponent }
+  { path: 'listPeriode', component: ListeComponent },
 ];
 
 @NgModule({

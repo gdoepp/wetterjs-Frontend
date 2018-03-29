@@ -1,8 +1,12 @@
 // (c) Gerhard Döppert, 2018, GNU GPL 3
 
 import {IWertListe} from './IWertListe';
+import { WetterViewBase } from './WetterViewBase';
+import { ActivatedRoute } from '@angular/router';
+import { WetterService } from './wetter.service';
+import { DataTransferService } from './datatransfer.service';
 
-export class TableBase {
+export class TableBase extends WetterViewBase {
 
    private colWerte1 = {'temp_o': 'aktuell', 'temp_o1': 'aktuell', 'temp_o_min': 'Min', 'temp_o_absmin': 'abs Min',
   'temp_o_max': 'Max', 'temp_o_absmax': 'abs Max', 'temp_o_avg': 'Mittel',
@@ -31,15 +35,19 @@ export class TableBase {
   'hum_o': 'außen', 'hum_i': 'innen', 'pres': 'außen', 'lum_o': 'außen', 'lum_i': 'innen', 'temp_i4': 'innen',
   'precip': 'außen', 'sun': 'außen', 'cloud': 'außen', 'windd': 'außen', 'windf': 'außen', 'windf_max': 'außen'};
 
-  public stat: number;
   public data: IWertListe = new IWertListe;
   public values: string[] = [];
   public colgrname: string[] = [];
   public colgrlen: number[] = [];
   public werte: string[] = [];
 
+  constructor(route: ActivatedRoute, wetter: WetterService, toParent: DataTransferService) {
+    super(route, wetter, toParent);
+  }
 
- prepareList(data: IWertListe) {
+ prepare() {
+
+  const data = this.data;
 
   if (data.rows.length === 0) { return; }
 

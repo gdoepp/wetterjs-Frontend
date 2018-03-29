@@ -6,6 +6,7 @@ import 'rxjs/add/operator/switchMap';
 import { WetterService } from '../wetter.service';
 import {IWertListe} from '../IWertListe';
 import {TableBase} from '../TableBase';
+import { DataTransferService } from '../datatransfer.service';
 
 @Component({
   selector: 'app-auswahl',
@@ -16,20 +17,12 @@ import {TableBase} from '../TableBase';
 export class AuswahlComponent extends TableBase implements OnInit {
 
   public tag: string;
-  constructor(private wetter: WetterService, private route: ActivatedRoute) {
-    super();
+  constructor(wetter: WetterService, route: ActivatedRoute, toParent: DataTransferService) {
+    super(route, wetter, toParent);
    }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params =>
-      this.wetter.getAuswahl(params.get('stat')).subscribe( data  => {
-        console.log('preparing list');
-        this.prepareList(data);
-        this.data = data;
-        if (data.rows.length > 0) {
-          this.tag = data.rows[0].tag;
-        }
-
-   }));
+    this.init();
+    this.value = '-';
   }
 }

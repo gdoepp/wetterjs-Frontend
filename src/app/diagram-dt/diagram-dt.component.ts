@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { WetterService } from '../wetter.service';
 import { DiagramBase } from '../DiagramBase';
-import { DataTransferService} from '../datatransfer.service';
+import { DataTransferService } from '../datatransfer.service';
 
 @Component({
   selector: 'app-diagram-dt',

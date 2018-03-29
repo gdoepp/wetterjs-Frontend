@@ -24,9 +24,10 @@ export class MainComponent implements OnInit, OnDestroy {
 
     this.subscribed = fromChild.fromChild.subscribe(data => {
       if (data.value) {
-        if (data.value === 'List') {
+        if (!data.value || data.value === 'List') {
           this.goList(data.time, data.per);
         } else {
+          if (data.time === 0) { data.time = this.time; }
           this.goDP(data.time, data.value, data.per);
         }
       }
@@ -72,7 +73,7 @@ export class MainComponent implements OnInit, OnDestroy {
         this.monat = 1;
         this.time = this.jahr.toString();
         this.per = 'Monate';
-        this.value = 'auswahl';
+        this.value = '-';
         this.updateJahre(this.stationListe);
      });
   }
@@ -110,10 +111,9 @@ export class MainComponent implements OnInit, OnDestroy {
 
   updateYear(ev) {
     console.log('update year: ' + this.jahr);
-    console.log('time: ' + typeof this.time);
     this.time = this.time.replace(/[0-9]{4}/, this.jahr.toString());
     if (this.value === '-') {
-      this.go('auswahl', {stat: this.stat});
+      this.go('auswahl', {stat: this.stat, time: 0, per: 'Auswahl'});
     } else {
       this.go('.', {time: this.time, stat: this.stat, per: this.per, value: this.value});
     }
@@ -137,7 +137,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
     this.updateJahre(this.stationListe);
     if (this.value === '-') {
-        this.go('auswahl', {stat: this.stat});
+        this.go('auswahl', {stat: this.stat, time: 0, per: 'Auswahl'});
     } else {
       this.go('.', {time: this.time, stat: this.stat, per: this.per, value: this.value});
     }
@@ -157,11 +157,12 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   goAuswahl(time) {
-    this.go3('/auswahl', {stat: this.stat}, {reload: true});
+    this.go3('/auswahl', {stat: this.stat, per: 'Auswahl', time: '0'}, {reload: true});
     this.value = '';
   }
 
   goDP(time, value, per) {
+    if (per === 'Tage' && this.value !== value) { per = 'Tag'; }
     this.value = value;
     time = this.checkTime(time);
     this.time = time;
@@ -173,9 +174,10 @@ export class MainComponent implements OnInit, OnDestroy {
   goList(time, per) {
     time = this.checkTime(time);
     this.time = time;
+    if (per === 'Tage') { per = 'Tag'; }
     this.per = per;
     this.value = '';
-    this.go('list' + per, {time: time, stat: this.stat, per: per});
+    this.go('listPeriode' , {time: time, stat: this.stat, per: per, value: 'List'});
   }
 
   go(path: string, args: object) {
@@ -188,7 +190,6 @@ export class MainComponent implements OnInit, OnDestroy {
     location.reload();
   }
 
-
   update() {
     this.go('update', {stat: this.stat, operation: 'update'});
     this.value = '-';
@@ -197,7 +198,6 @@ export class MainComponent implements OnInit, OnDestroy {
     this.go('update', {stat: this.stat, operation: 'importHist'});
     this.value = '-';
   }
-
 
 }
 

@@ -5,8 +5,8 @@ import { ActivatedRoute } from '@angular/router';
 
 import { WetterService } from '../wetter.service';
 import { DiagramBase } from '../DiagramBase';
-import { DataTransferService} from '../datatransfer.service';
 import { Tag } from '../Periode';
+import { DataTransferService } from '../datatransfer.service';
 
 @Component({
   selector: 'app-diagram-dp',

@@ -53,9 +53,15 @@
 <br/>
 
 <div *ngIf="per != 'Monate'">
-	<button id="ttm" *ngIf="per=='Tag'" 
+	<button id="ttm" *ngIf="per=='Tag' || per == 'Tage'" 
 	(click)="goto(data.super, 'up')">Monat</button>
 	
+	<button  id="tp3" *ngIf="per == 'Tag' "  class='dirbutton'
+	(click)="goto(0, '3Tage')">3 Tage</button>
+
+	<button  id="tp1" *ngIf="per == 'Tage' "  class='dirbutton'
+	(click)="goto(0, '1Tag')">1 Tag</button>
+
 	<button  id="ttl"   class='dirbutton'
 	(click)="goto(data.vorher, 'sibl')">&lt;</button>
 	
@@ -64,4 +70,3 @@
 	
 	  </div>
 	  
-  

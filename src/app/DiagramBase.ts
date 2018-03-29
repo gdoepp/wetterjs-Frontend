@@ -4,52 +4,22 @@ import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 import { WetterService } from './wetter.service';
 import { IWertListe } from './IWertListe';
-import { DataTransferService} from './datatransfer.service';
-import { Jahr, Monat, Tag, Zeit } from './Periode';
+import { Jahr, Monat, Tag, Tage, Zeit } from './Periode';
+import { WetterViewBase } from './WetterViewBase';
+import { DataTransferService } from './datatransfer.service';
 
-export class DiagramBase {
+export class DiagramBase extends WetterViewBase {
 
     public per: string;
     public value: string;
     public data;
     protected perObj: Zeit;
+    protected offset: number;
+    protected time: string;
 
-    constructor(private route: ActivatedRoute, private wetter: WetterService, private toParent: DataTransferService) {
+    constructor(route: ActivatedRoute, wetter: WetterService, toParent: DataTransferService) {
+        super(route, wetter, toParent);
         this.data = {};
-    }
-
-    prepare() {}
-
-    init(offset: number) {
-        console.log('parent: ' + this.route.parent.component.valueOf());
-        this.route.paramMap.subscribe(params => {
-          const time = params.get('time');
-          const stat = params.get('stat');
-          this.per = params.get('per');
-          this.value = params.get('value');
-
-          this.wetter.getListPeriode(time, this.per, stat).subscribe( data  => {
-                console.log('preparing list');
-                this.data = {};
-                this.data.rows = data;
-                let perObj: Zeit;
-
-                switch (this.per) {
-                case 'Monate': perObj = new Jahr(Number.parseInt(time)); break;
-                case 'Monat': perObj = new Monat(time); break;
-                case 'Tag': perObj = new Tag(time, offset); break;
-                case 'Tage': perObj = new Tag(time, offset); break;
-                default: console.log('error: periode not known - ' + this.per);
-                }
-
-                this.data.vorher = perObj.vorher;
-                this.data.nachher = perObj.nachher;
-                this.data.super = perObj.super;
-                this.perObj = perObj;
-                this.prepare();
-
-          });
-        });
     }
 
     makeRange(dims, data, values, typ) {
@@ -206,20 +176,5 @@ export class DiagramBase {
         obj.title = typ.title;
 
     }
-
-    goto(t: string, dir: string) {
-        console.log('emitting event goto... ' + t + ' ' + dir);
-        let per = this.per;
-        if (dir === 'up') {
-          if (this.per === 'Monat') { per = 'Monate'; }
-          if (this.per === 'Tag') { per = 'Monat'; }
-        }
-        if (dir === 'down') {
-          if (this.per === 'Monate') { per = 'Monat'; }
-          if (this.per === 'Monat') { per = 'Tag'; }
-        }
-        console.log('per: ' + per);
-        this.toParent.sendToParent({time: t, value: this.value, per: per});
-      }
 
 }

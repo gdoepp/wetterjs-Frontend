@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { WetterService } from '../wetter.service';
 import { DiagramBase } from '../DiagramBase';
-import { DataTransferService} from '../datatransfer.service';
+import { DataTransferService } from '../datatransfer.service';
 
 @Component({
   selector: 'app-diagram-df',
@@ -14,7 +14,7 @@ import { DataTransferService} from '../datatransfer.service';
 })
 export class PeriodeDfComponent extends DiagramBase implements OnInit {
 
-  constructor( route: ActivatedRoute,  wetter: WetterService,  toParent: DataTransferService) {
+  constructor( route: ActivatedRoute,  wetter: WetterService, toParent: DataTransferService) {
     super(route, wetter, toParent);
   }
 

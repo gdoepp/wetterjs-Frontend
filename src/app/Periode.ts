@@ -31,6 +31,10 @@ export class Zeit {
     tick() {
         return [];
     }
+    pad(x, size) {
+        const sign = Math.sign(x) === -1 ? '-' : '';
+        return sign + new Array(size).concat([Math.abs(x)]).join('0').slice(-size);
+      }
 }
 
 export class Jahr extends Zeit {
@@ -103,7 +107,7 @@ export class Monat extends Zeit {
     }
 }
 
-function toDay(tag) {
+function toDay(tag): Date {
     if (tag && tag !== 'undefined' && tag !== 0) {
         let tg = tag.split('.');
         if (tg.length !== 3) {
@@ -122,10 +126,7 @@ export class Tag extends Zeit {
 
     public items: number;
     public heute: string;
-    public gestern: string;
-    public morgen: string;
     public monat: string;
-
 
     constructor(tag, offset) {
 
@@ -142,7 +143,7 @@ export class Tag extends Zeit {
             offset = 0;
         }
 
-        for (let j = 0; j <= 24 - offset; j++) { x.push(j); }
+        for (let j = 0; j <= 24 - offset; j++) { x.push(this.pad(j, 2)); }
 
         const gestern = new Date(tag);
         gestern.setDate(tag.getDate() - 1);
@@ -166,7 +167,7 @@ export class Tag extends Zeit {
     index(tv, offs) {      // x-Koordinate
         if (!offs) { offs = 0; }
         const hm = tv.time_t.split(':');
-        const j = hm[0] * 4 + Math.floor(hm[1] / 15);
+        const j = hm[0] * 4 + Math.round((hm[1] ) / 15);
         return j;   // Stunde + Viertelstunde: 0 - 23*4+3
     }
     tick() {  // x-Koordinate Beschriftung der x-Achse
@@ -174,6 +175,57 @@ export class Tag extends Zeit {
         res = [];
         for (let j = 0; j < this.xaxis.length; j++) {   // 0 - 24*4
             res.push(j * 4);
+        }
+        return res;
+    }
+}
+
+
+export class Tage extends Tag {
+
+    private tag1: number;
+
+    constructor(tag, offset) {
+
+        super(tag, offset);
+
+        tag = toDay(tag);
+
+        this.tag1 = tag.getTime() - 24 * 60 * 60 * 1000;
+
+        const x = [];
+
+        for (let j = 0; j <= 3 * 24; j += 3) {
+            const t = new Date(this.tag1);
+            t.setDate(t.getDate() + Math.floor(j / 24));
+            x.push(t.getDate() + '.' + this.pad(j % 24, 2));
+        }
+
+        this.xaxis = x;
+
+        this.heute = tag.getDate() + '.' + (tag.getMonth() + 1) +  '.' + (tag.getFullYear());
+
+        this.title = 'im Verlauf dreier Tage ' + this.vorher + ' - ' + this.nachher;
+
+        this.indexn = 24 * 3 * 4;   // ... 24*4
+        this.items = 24 * 3 * 4;
+    }
+
+    index(tv, offs) {      // x-Koordinate: Stunde 0 - 3*24*4
+
+        if (!offs) { offs = 0; }
+        const t = toDay(tv.day);
+        const t1 = (t.getTime() - this.tag1) / (24 * 60 * 60 * 1000);
+        const hm = tv.time_t.split(':');
+        const j = t1 * 24 * 4 + hm[0] * 4 + Math.floor( (hm[1] ) / 15);
+
+        return j;   // Tag+Stunde
+    }
+    tick() {  // x-Koordinate Beschriftung der x-Achse
+        let res;
+        res = [];
+        for (let j = 0; j < this.xaxis.length; j++) {   // 0 - 24*4
+            res.push(j * 12);
         }
         return res;
     }
