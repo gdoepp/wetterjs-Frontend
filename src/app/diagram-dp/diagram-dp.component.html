@@ -9,7 +9,7 @@
 
 <g>
 	 
-	<polyline *ngFor="let x of data.gridXPath" 
+	<polyline sel="test" *ngFor="let x of data.gridXPath" 
 	   [attr.points]="x"
 	  style="fill:none;stroke:black;stroke-width:1" />
 	
@@ -17,10 +17,10 @@
   [attr.points]="y"
 	  style="fill:none;stroke:black;stroke-width:1px" />
 	
-	<rect class='button' *ngFor="let t of data.link; let i=index"
+	<rect sel="link" class='button' *ngFor="let t of data.link; let i=index"
 	   [attr.x]="data.x[i]" [attr.y]="data.tickXy-20"
 	   [attr.width]="data.tickXwidth" [attr.height]="data.tickXheight*2"
-	   (click)="goto(t, 'down')" >
+	   (click)="link(t,'down')" >
 	</rect>
 	
 	<text  *ngFor="let tag of data.tickXTag; let i=index"
@@ -52,21 +52,22 @@
 </div>
 <br/>
 
-<div *ngIf="per != 'Monate'">
-	<button id="ttm" *ngIf="per=='Tag' || per == 'Tage'" 
-	(click)="goto(data.super, 'up')">Monat</button>
-	
-	<button  id="tp3" *ngIf="per == 'Tag' "  class='dirbutton'
-	(click)="goto(0, '3Tage')">3 Tage</button>
 
-	<button  id="tp1" *ngIf="per == 'Tage' "  class='dirbutton'
-	(click)="goto(0, '1Tag')">1 Tag</button>
+<button id="tpm" *ngIf="data.uplink" 
+(click)="link(data.uplink, 'up')">Monat</button>
 
-	<button  id="ttl"   class='dirbutton'
-	(click)="goto(data.vorher, 'sibl')">&lt;</button>
-	
-	<button   id="ttp"  class='dirbutton'
-	(click)="goto(data.nachher, 'sibl')">&gt;</button>
-	
-	  </div>
+<button  id="tp3" *ngIf="data.t3link "  class='dirbutton'
+(click)="link(data.t3link, '3Tage')">3 Tage</button>
+
+<button  id="tp1" *ngIf="data.t1link"  class='dirbutton'
+(click)="link(data.t1link, '1Tag')">1 Tag</button>
+
+<button  id="tpl"   class='dirbutton' *ngIf="data.prvlink"
+(click)="link(data.prvlink, 'sibl')">&lt;</button>
+
+<button   id="tpp"  class='dirbutton' *ngIf="data.nxtlink"
+(click)="link(data.nxtlink, 'sibl')">&gt;</button>
+
+
+
 	  

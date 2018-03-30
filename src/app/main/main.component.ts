@@ -23,7 +23,14 @@ export class MainComponent implements OnInit, OnDestroy {
     this.time = '';
 
     this.subscribed = fromChild.fromChild.subscribe(data => {
-      if (data.value) {
+      if (data.operation === 'time') {
+        this.time = data.time;
+        this.per = data.per;
+      }
+      if (data.operation === 'link') {
+        this.goLink(data.link, data.value);
+      }
+      if (data.operation === 'goto') {
         if (!data.value || data.value === 'List') {
           this.goList(data.time, data.per);
         } else {
@@ -48,25 +55,26 @@ export class MainComponent implements OnInit, OnDestroy {
   public per: string;
   protected perObj: Zeit;
   private subscribed: Subscription;
+  public vals: string[];
 
   public values = {'temp': {name: 'Temperatur', func: 'T', id: 't', im: 'c'},
   'pres': {name: 'Luftdruck', func: 'P', id: 'p', im: 'c2'},
     'hum': {name: 'Luftfeuchte', func: 'H', id: 'h', im: 'c1'},
     'precip': {name: 'Niederschlag', func: 'R', id: 'i', im: 'rb'},
     'cloud': {name: 'Wolken', func: 'N', id: 'c', im: 'rg'},
-    'lum': {name: 'Helligkeit', func: 'L', id: 'l', im: 'c3'},
+    'lum': {name: 'Helligkeit', func: 'L', id: 'u', im: 'c3'},
     'sun': {name: 'Sonne', func: 'S', id: 's', im: 'ry'},
     'wind': {name: 'Wind', func: 'F', id: 'w', im: 'rv'}
   };
 
-  public vals = [ 'temp', 'hum', 'pres', 'lum'];
 
   ngOnInit() {
      this.wetter.getStationen().subscribe( data  => {
         this.stationListe = data;
-        this.stat = Number.parseInt(data.stat);
-        this.statStr = data.stat;
-        this.station = data.station;
+        this.statStr = data.stats[0].id;
+        this.stat = Number.parseInt(this.statStr);
+        this.station = data.stats[0].name;
+        this.vals = data.stats[0].vals;
         this.admin = data.admin;
         this.jahr = new Date().getFullYear();
         this.tag = 1;
@@ -122,17 +130,12 @@ export class MainComponent implements OnInit, OnDestroy {
   statChanged(ev) {
     this.stat = Number.parseInt(this.statStr);
     console.log('stat changed: ' + this.stat);
-    if (this.stat > 0) {
-     for (const s in this.stationListe.stats) {
+    for (const s in this.stationListe.stats) {
        if (Number.parseInt(this.stationListe.stats[s].id) === this.stat) {
          this.station = this.stationListe.stats[s].name;
+         this.vals = this.stationListe.stats[s].vals;
          break;
        }
-      }
-      this.vals = [ 'temp', 'hum', 'pres', 'precip', 'cloud', 'sun', 'wind' ];
-    } else {
-      this.station = '';
-      this.vals = [ 'temp', 'hum', 'pres', 'lum'];
     }
 
     this.updateJahre(this.stationListe);
@@ -157,8 +160,14 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   goAuswahl(time) {
-    this.go3('/auswahl', {stat: this.stat, per: 'Auswahl', time: '0'}, {reload: true});
+    this.go('/auswahl', {stat: this.stat, per: 'Auswahl', time: '0'});
     this.value = '';
+  }
+
+  goLink(link: string, value: string) {
+    let path = 'listPeriode';
+    if (value !== 'List') { path += 'D' + this.values[value].func; }
+    this.go(path, {link: link, value: value });
   }
 
   goDP(time, value, per) {
@@ -167,8 +176,8 @@ export class MainComponent implements OnInit, OnDestroy {
     time = this.checkTime(time);
     this.time = time;
     this.per = per;
-    this.go3('listPeriodeD' + this.values[value].func, {time: time, stat: this.stat,
-      per: this.per, value: value, station: this.station }, {reload: true});
+    this.go('listPeriodeD' + this.values[value].func, {time: time, stat: this.stat,
+      per: this.per, value: value, station: this.station });
   }
 
   goList(time, per) {
@@ -183,9 +192,7 @@ export class MainComponent implements OnInit, OnDestroy {
   go(path: string, args: object) {
     this.router.navigate([path, args]);
   }
-  go3(path: string, args: object, opts: object) {
-    this.router.navigate([path, args], opts);
-  }
+
   reload() {
     location.reload();
   }

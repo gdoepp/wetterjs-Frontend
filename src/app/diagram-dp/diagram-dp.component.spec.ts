@@ -1,6 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PeriodeDpComponent } from './diagram-dp.component';
+import { FormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientModule } from '@angular/common/http';
+import { DataTransferService } from '../datatransfer.service';
+import { WetterService } from '../wetter.service';
 
 describe('PeriodeDpComponent', () => {
   let component: PeriodeDpComponent;
@@ -8,7 +13,9 @@ describe('PeriodeDpComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PeriodeDpComponent ]
+      declarations: [ PeriodeDpComponent ],
+      imports: [FormsModule, RouterTestingModule, HttpClientModule],
+      providers: [WetterService, DataTransferService, HttpClientModule]
     })
     .compileComponents();
   }));

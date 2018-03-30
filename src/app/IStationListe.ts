@@ -4,6 +4,7 @@
 class IStation {
     id: string;
     name: string;
+    vals: string[];
 }
 
 class IJahre {

@@ -1,6 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ListeComponent } from './liste.component';
+import { FormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientModule } from '@angular/common/http';
+import { DataTransferService } from '../datatransfer.service';
+import { WetterService } from '../wetter.service';
 
 describe('ListeComponent', () => {
   let component: ListeComponent;
@@ -8,7 +13,9 @@ describe('ListeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ListeComponent ]
+      declarations: [ ListeComponent ],
+      imports: [FormsModule, RouterTestingModule, HttpClientModule],
+      providers: [WetterService, DataTransferService, HttpClientModule]
     })
     .compileComponents();
   }));

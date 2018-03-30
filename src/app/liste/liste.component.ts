@@ -43,14 +43,14 @@ export class ListeComponent extends TableBase implements OnInit {
   }
 
   downloadMonate() {
-    window.location.href = this.wetterUrl + 'downloadMonate?jahr=' + this.time + '&stat=' + this.stat;
+    window.location.href = this.wetterUrl + '/downloadMonate?jahr=' + this.time + '&stat=' + this.stat;
   }
 
   downloadMonat() {
-    window.location.href = this.wetterUrl + 'downloadMonat?monat=' + this.time + '&stat=' + this.stat;
+    window.location.href = this.wetterUrl + '/downloadMonat?monat=' + this.time + '&stat=' + this.stat;
   }
   downloadTag() {
-    window.location.href = this.wetterUrl + 'downloadTag?tag=' + this.time + '&stat=' + this.stat;
+    window.location.href = this.wetterUrl + '/downloadTag?tag=' + this.time + '&stat=' + this.stat;
   }
 
 }

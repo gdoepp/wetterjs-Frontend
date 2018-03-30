@@ -27,6 +27,8 @@ export class PeriodeDpComponent extends DiagramBase implements OnInit {
 
   prepare() {
 
+    super.prepare();
+
     const obj = this.data;
     const typ = this.perObj;
     const feld = this.value;

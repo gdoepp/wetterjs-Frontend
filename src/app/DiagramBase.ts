@@ -19,7 +19,6 @@ export class DiagramBase extends WetterViewBase {
 
     constructor(route: ActivatedRoute, wetter: WetterService, toParent: DataTransferService) {
         super(route, wetter, toParent);
-        this.data = {};
     }
 
     makeRange(dims, data, values, typ) {
@@ -155,11 +154,7 @@ export class DiagramBase extends WetterViewBase {
             obj.tickXwidth = (mbeg[1] - mbeg[0]) * dims.dx - 7;
             obj.tickXheight = 20;
             for (let j = 0; j < data.length; j++) {
-                if (data[j].time_d) {
-                    obj.link.push(data[j].time_d);
-                } else {
-                    obj.link.push(data[j].monat);
-                }
+                obj.link.push(data[j].link);
                 obj.x.push(Math.round(dims.x1 + typ.index(data[j]) * dims.dx));
             }
         } else {

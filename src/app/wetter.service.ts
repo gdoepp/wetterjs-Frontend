@@ -16,19 +16,19 @@ const httpOptions = {
 @Injectable()
 export class WetterService {
 
-  private perName = {'Monate': 'jahr', 'Monat': 'monat', 'Tag': 'tag', 'Tage': 'tag1' };
+  private perName = {'Jahr': 'jahr', 'Monate': 'jahr', 'Monat': 'monat', 'Tag': 'tag', 'Tage': 'tag1' };
 
   constructor( private http: HttpClient) {   }
 
   public wetterUrl = environment.baseUrl;
 
   getStationen(): Observable<IStationListe> {
-    return this.http.get<IStationListe>(this.wetterUrl + 'stats', httpOptions);
+    return this.http.get<IStationListe>(this.wetterUrl + '/stats', httpOptions);
   }
 
   getAuswahl(stat: string): Observable<IWertListe> {
     console.log('wetter.auswahl: ' + stat);
-    return this.http.get<IWertListe>(this.wetterUrl + 'Auswahl?stat=' + stat, httpOptions);
+    return this.http.get<IWertListe>(this.wetterUrl + '/Auswahl?stat=' + stat, httpOptions);
   }
   formatDate(tag: Date) {
     return tag.getDate() + '.' + (tag.getMonth() + 1) +  '.' + (tag.getFullYear());
@@ -47,6 +47,13 @@ export class WetterService {
     return tag;
   }
 
+  getListLink(link: string): Observable<IWertListe> {
+    console.log('link->' + link);
+
+    return this.http.get<IWertListe>(this.wetterUrl + link, httpOptions);
+
+  }
+
   getListPeriode(time: string, per: string, stat: number): Observable<IWertListe> {
     console.log('list' + per + ', Per: ' + time + ', stat: ' + stat);
 
@@ -60,19 +67,21 @@ export class WetterService {
       tag2.setDate(tag2.getDate() + 1);
       params = 'tag1=' + this.formatDate(tag1) + '&tag2=' + this.formatDate(tag2);
     } else {
-      params = this.perName[per] + '=' + time;
+      if (this.perName[per]) { params = this.perName[per] + '=' + time; }
     }
+
     if (per !== 'Auswahl') { per = 'list' + per; }
-    return this.http.get<IWertListe>(this.wetterUrl + per +
+
+    return this.http.get<IWertListe>(this.wetterUrl + '/' + per +
     '?' + params + '&stat=' + stat, httpOptions);
 
   }
 
   update(stat: string) {
-    return this.http.post(this.wetterUrl + 'update/' + stat, '');
+    return this.http.post(this.wetterUrl + '/update/' + stat, '');
   }
   importHist(stat: string) {
-    return this.http.post(this.wetterUrl + 'import/' + stat, '');
+    return this.http.post(this.wetterUrl + '/import/' + stat, '');
 
   }
 
