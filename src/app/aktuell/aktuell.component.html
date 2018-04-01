@@ -6,10 +6,11 @@
 <table border='1' ts-wrapper>
 	<thead>
 	<tr class='wettertab'>
-	    <th></th>
+	    <th colspan='2'>Messung</th>
 	    <th  *ngFor="let colgrname of colgrname, let i=index" [attr.colspan]='colgrlen[i]'>{{colgrname}}</th>
 	  </tr>
 	  <tr class='wettertab' >
+			<th >Tag</th>
 	    <th >Zeit</th>
 	    <th  *ngFor="let col of values" >{{werte[col]}}</th>
 	    </tr>
@@ -20,7 +21,8 @@
 	</thead>
 	<tbody>	
 	<tr class='wettertab' *ngFor="let tagwert of data.rows"  ts-repeat>
-	  <td >{{tagwert.time_t}}</td>
+		<td >{{tagwert.time_d}}</td>
+		<td >{{tagwert.time_t}}</td>
 	  <td class='tab' *ngFor="let col of values"   >{{tagwert[col]}}</td>
 	  </tr>
 	</tbody>  	    

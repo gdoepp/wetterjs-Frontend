@@ -21,7 +21,7 @@
 	  <td >{{wert[index_name]}}</td>
 	  <td class='tab' *ngFor="let col of values"   >{{wert[col]}}</td>
 	  
-	  <td *ngIf="per != 'Tag'" class='tab'><button (click)="link(wert.link,'down')"
+	  <td *ngIf="per != 'Tag'" class='tab'><button (click)="link(wert.link.href,'down')"
 	         class='button-small'>Liste</button></td>
 	  
 	  </tr>
@@ -30,12 +30,12 @@
 
 <br/>
 
-<button *ngIf="per == 'Monate'" (click)="downloadMonate()">CSV herunterladen</button>
+<button *ngIf="per == 'Monate' || per == 'Jahr'" (click)="downloadMonate()">CSV herunterladen</button>
 <button *ngIf="per == 'Monat'" (click)="downloadMonat()">CSV herunterladen</button>
 <button *ngIf="per == 'Tag'" (click)="downloadTag()">CSV herunterladen</button>
 
 <button id="ttm" *ngIf="data.uplink" 
-(click)="link(data.uplink, 'up')">Monat</button>
+(click)="link(data.uplink, 'up')">{{parent}}</button>
 
 <button  id="ttl"   class='dirbutton' *ngIf="data.prvlink"
 (click)="link(data.prvlink, 'sibl')">&lt;</button>

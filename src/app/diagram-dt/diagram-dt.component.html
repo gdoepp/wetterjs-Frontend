@@ -53,7 +53,7 @@
 <br/>
 
 <button id="ttm" *ngIf="data.uplink" 
-(click)="link(data.uplink, 'up')">Monat</button>
+(click)="link(data.uplink, 'up')">{{parent}}</button>
 
 <button  id="ttl"   class='dirbutton' *ngIf="data.prvlink"
 (click)="link(data.prvlink, 'sibl')">&lt;</button>

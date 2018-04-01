@@ -8,7 +8,7 @@ describe('wetter App', () => {
     page = new AppPage();
   });
 
-  it('should display welcome message', () => {
+  it('should display title', () => {
     page.navigateTo();
     expect(page.getParagraphText()).toEqual('Wetter-Rückblick');
   });
@@ -26,7 +26,7 @@ describe('wetter App', () => {
 
   expect(await element.all(by.xpath('//select[@id="selY"]/option')).count()).toBeGreaterThan(10);
 
-  // check Auswahl list (latest 10 entries)
+  // check Aktuell list (latest 8 entries + 2 other elements = 10)
   expect(element.all(by.className('wettertab')).count()).toEqual(10);
 
 });
@@ -92,7 +92,7 @@ it('should show diagrams for a month', async () => {
 });
 
 
-it('shows diagram for a day', async () => {
+it('shows diagrams for a day', async () => {
 
   const main = new MainArea();
   await main.navigateTo();
@@ -130,7 +130,7 @@ it('shows diagram for a day', async () => {
 });
 
 
-it('check navigation', async () => {
+it('should have working navigation', async () => {
 
   const main = new MainArea();
   await main.navigateTo();

@@ -154,7 +154,7 @@ export class DiagramBase extends WetterViewBase {
             obj.tickXwidth = (mbeg[1] - mbeg[0]) * dims.dx - 7;
             obj.tickXheight = 20;
             for (let j = 0; j < data.length; j++) {
-                obj.link.push(data[j].link);
+                obj.link.push(data[j].link.href);
                 obj.x.push(Math.round(dims.x1 + typ.index(data[j]) * dims.dx));
             }
         } else {

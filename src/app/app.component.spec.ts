@@ -1,6 +1,6 @@
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { AuswahlComponent } from './auswahl/auswahl.component';
+import { AktuellComponent } from './aktuell/aktuell.component';
 import { ListeComponent } from './liste/liste.component';
 import { PeriodeDfComponent } from './diagram-df/diagram-df.component';
 import { PeriodeDpComponent } from './diagram-dp/diagram-dp.component';
@@ -25,7 +25,7 @@ describe('AppComponent', () => {
        ],
       declarations: [
         AppComponent,
-        AuswahlComponent,
+        AktuellComponent,
         ListeComponent,
         PeriodeDfComponent,
         PeriodeDpComponent,

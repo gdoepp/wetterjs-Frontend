@@ -51,14 +51,13 @@ export class TableBase extends WetterViewBase {
 
   if (data.rows.length === 0) { return; }
 
-  console.log('found data');
+  console.log('found data for tab');
 
   if (data.rows[0].windd) {
     for (let k = 0; k < data.rows.length; k++) {
       const tv = data.rows[k];
       tv.windd = Math.round(tv.windd[1]);
     }
-    console.log('rounded windd');
   }
 
   let groups;
@@ -78,7 +77,6 @@ export class TableBase extends WetterViewBase {
   const grpknown = {};
   for (const f in data.rows[0]) {
     if (werte[f]) {
-      console.log('value ' + f);
       this.values.push(f);
       if (groups) {
         const grp = groups[f];

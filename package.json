@@ -1,15 +1,14 @@
 {
   "name": "wetter",
-  "version": "0.0.0",
-  "license": "MIT",
+  "version": "0.3.0",
+  "license": "GPL 3",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build --prod",
+    "start": "ng serve --environment local",
+    "build": "ng build --prod --base-href /wetterjs/; tar zcf wetter.tgz dist/ ",
     "test": "ng test",
-    "protractor": "protractor test/conf.js",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e --environment local"
   },
   "private": true,
   "dependencies": {

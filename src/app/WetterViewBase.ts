@@ -18,6 +18,7 @@ export class WetterViewBase {
     public index_id: string;
     public index_name: string;
     public name: string;
+    public parent: string;
 
     constructor(protected route: ActivatedRoute, protected wetter: WetterService, protected toParent: DataTransferService) {
         this.data = {};
@@ -62,25 +63,27 @@ export class WetterViewBase {
             this.data.rows = data;
         }
         this.per = data.type;
-        const time = data.time;
+        this.time = data.time;
 
         let perObj: Zeit;
-        this.toParent.sendToParent({operation: 'time', time: time, per: this.per});
+        this.toParent.sendToParent({operation: 'time', time: this.time, per: this.per});
         switch (this.per) {
         case 'Monate':
         case 'Jahr':
-        perObj = new Jahr(Number.parseInt(time));
-        this.index_id = 'monat'; this.index_name = 'monat'; this.name = 'Monat';
+        perObj = new Jahr(Number.parseInt(this.time));
+        this.index_id = 'monat'; this.index_name = 'monat'; this.name = 'Monat'; this.parent = undefined;
         break;
         case 'Monat':
-        perObj = new Monat(time);
-        this.index_id = 'time_d'; this.index_name = 'tag'; this.name = 'Tag';
+        perObj = new Monat(this.time);
+        this.index_id = 'time_d'; this.index_name = 'tag'; this.name = 'Tag'; this.parent = 'Jahr';
         break;
         case 'Tag':
-        perObj = new Tag(time, this.offset);
-        this.index_id = 'time_t'; this.index_name = 'time_t'; this.name = 'Zeit';
+        perObj = new Tag(this.time, this.offset);
+        this.index_id = 'time_t'; this.index_name = 'time_t'; this.name = 'Zeit'; this.parent = 'Monat';
         break;
-        case 'Tage': perObj = new Tage(time, this.offset); break;
+        case 'Tage': perObj = new Tage(this.time, this.offset);
+        this.index_id = 'time_t'; this.index_name = 'time_t'; this.name = 'Zeit'; this.parent = 'Monat';
+        break;
         default: // console.log('error: periode not known - ' + per);
         }
 
@@ -91,12 +94,11 @@ export class WetterViewBase {
             this.data.super = perObj.super;
             this.perObj = perObj;
         }
-        this.data.uplink = data.uplink;
-        this.data.prvlink = data.prvlink;
-        this.data.nxtlink = data.nxtlink;
-        this.data.uplink = data.uplink;
-        this.data.t3link = data.t3link;
-        this.data.t1link = data.t1link;
+        if (data.links) {
+            for (const link of data.links) {
+                this.data[link.rel + 'link'] = link.href;
+            }
+        }
         if (this.data.rows.length > 0) { this.prepare(); }
     }
 
@@ -108,8 +110,7 @@ export class WetterViewBase {
         console.log('emitting event goto... ' + t + ' ' + dir);
         let per = this.per;
         if (dir === 'up') {
-          if (this.per === 'Monat') { per = 'Monate'; }
-          if (this.per === 'Tag' || this.per === 'Tage') { per = 'Monat'; }
+            per = this.parent;
         }
         if (dir === 'down') {
           if (this.per === 'Monate') { per = 'Monat'; }

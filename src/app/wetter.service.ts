@@ -26,9 +26,9 @@ export class WetterService {
     return this.http.get<IStationListe>(this.wetterUrl + '/stats', httpOptions);
   }
 
-  getAuswahl(stat: string): Observable<IWertListe> {
-    console.log('wetter.auswahl: ' + stat);
-    return this.http.get<IWertListe>(this.wetterUrl + '/Auswahl?stat=' + stat, httpOptions);
+  getAktuell(stat: string): Observable<IWertListe> {
+    console.log('wetter.aktuell: ' + stat);
+    return this.http.get<IWertListe>(this.wetterUrl + '/aktuell?stat=' + stat, httpOptions);
   }
   formatDate(tag: Date) {
     return tag.getDate() + '.' + (tag.getMonth() + 1) +  '.' + (tag.getFullYear());
@@ -57,7 +57,7 @@ export class WetterService {
   getListPeriode(time: string, per: string, stat: number): Observable<IWertListe> {
     console.log('list' + per + ', Per: ' + time + ', stat: ' + stat);
 
-    let params: string;
+    let params = '';
 
     if (per === 'Tage') {
       per = 'Tag';
@@ -70,7 +70,7 @@ export class WetterService {
       if (this.perName[per]) { params = this.perName[per] + '=' + time; }
     }
 
-    if (per !== 'Auswahl') { per = 'list' + per; }
+    if (per === 'aktuell') { per = 'aktuell'; } else { per = 'list' + per; }
 
     return this.http.get<IWertListe>(this.wetterUrl + '/' + per +
     '?' + params + '&stat=' + stat, httpOptions);

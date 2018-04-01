@@ -96,7 +96,7 @@ export class MainComponent implements OnInit, OnDestroy {
     let minjahr = aktjahr;
     for (let j = 0; j < data.rows.length; j++) {
       if (data.rows[j].stat === this.stat) {
-        minjahr = data.rows[j].year;
+        minjahr = data.rows[j].jahr;
         console.log('minjahr: ' + minjahr);      }
     }
 
@@ -110,7 +110,7 @@ export class MainComponent implements OnInit, OnDestroy {
     for (let j = now.getFullYear() - jahre.length; j >= minjahr; j-- ) {
       jahre.push(j);
     }
-    console.log('jahre: ' + jahre);
+
     if (!this.jahr || this.jahr < minjahr) {
       this.jahr = jahre[jahre.length - 1];
       this.time = this.time.replace(/[0-9]{4}/, this.jahr.toString());
@@ -121,7 +121,7 @@ export class MainComponent implements OnInit, OnDestroy {
     console.log('update year: ' + this.jahr);
     this.time = this.time.replace(/[0-9]{4}/, this.jahr.toString());
     if (this.value === '-') {
-      this.go('auswahl', {stat: this.stat, time: 0, per: 'Auswahl'});
+      this.go('aktuell', {stat: this.stat, time: 0, per: 'aktuell'});
     } else {
       this.go('.', {time: this.time, stat: this.stat, per: this.per, value: this.value});
     }
@@ -140,7 +140,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
     this.updateJahre(this.stationListe);
     if (this.value === '-') {
-        this.go('auswahl', {stat: this.stat, time: 0, per: 'Auswahl'});
+        this.go('aktuell', {stat: this.stat, time: 0, per: 'aktuell'});
     } else {
       this.go('.', {time: this.time, stat: this.stat, per: this.per, value: this.value});
     }
@@ -159,8 +159,8 @@ export class MainComponent implements OnInit, OnDestroy {
     return time;
   }
 
-  goAuswahl(time) {
-    this.go('/auswahl', {stat: this.stat, per: 'Auswahl', time: '0'});
+  goAktuell(time) {
+    this.go('/aktuell', {stat: this.stat, per: 'aktuell', time: '0'});
     this.value = '';
   }
 
@@ -185,7 +185,7 @@ export class MainComponent implements OnInit, OnDestroy {
     this.time = time;
     if (per === 'Tage') { per = 'Tag'; }
     this.per = per;
-    this.value = '';
+    this.value = 'List';
     this.go('listPeriode' , {time: time, stat: this.stat, per: per, value: 'List'});
   }
 

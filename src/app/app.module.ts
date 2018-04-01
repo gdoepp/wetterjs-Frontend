@@ -8,7 +8,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { DataTransferService } from './datatransfer.service';
 import {WetterService} from './wetter.service';
-import { AuswahlComponent } from './auswahl/auswahl.component';
+import { AktuellComponent } from './aktuell/aktuell.component';
 import { PeriodeDtComponent } from './diagram-dt/diagram-dt.component';
 import { PeriodeDpComponent } from './diagram-dp/diagram-dp.component';
 import { PeriodeDrComponent } from './diagram-dr/diagram-dr.component';
@@ -17,8 +17,8 @@ import { ListeComponent } from './liste/liste.component';
 import { UpdateComponent } from './update/update.component';
 
 const appRoutes: Routes = [
-  { path: '', redirectTo: '/auswahl;stat=0;per=Auswahl', pathMatch: 'full' },
-  { path: 'auswahl', component: AuswahlComponent },
+  { path: '', redirectTo: '/aktuell;stat=0;per=aktuell', pathMatch: 'full' },
+  { path: 'aktuell', component: AktuellComponent },
   { path: 'update', component: UpdateComponent },
   { path: 'listPeriodeDT', component: PeriodeDtComponent },
   { path: 'listPeriodeDR', component: PeriodeDrComponent },
@@ -35,7 +35,7 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     MainComponent,
-    AuswahlComponent,
+    AktuellComponent,
     PeriodeDtComponent,
     PeriodeDpComponent,
     PeriodeDrComponent,

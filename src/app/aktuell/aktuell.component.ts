@@ -9,12 +9,12 @@ import {TableBase} from '../TableBase';
 import { DataTransferService } from '../datatransfer.service';
 
 @Component({
-  selector: 'app-auswahl',
-  templateUrl: './auswahl.component.html',
-  styleUrls: ['./auswahl.component.css']
+  selector: 'app-aktuell',
+  templateUrl: './aktuell.component.html',
+  styleUrls: ['./aktuell.component.css']
 })
 
-export class AuswahlComponent extends TableBase implements OnInit {
+export class AktuellComponent extends TableBase implements OnInit {
 
   public tag: string;
   constructor(wetter: WetterService, route: ActivatedRoute, toParent: DataTransferService) {
