@@ -4,7 +4,7 @@ import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 import { WetterService } from './wetter.service';
 import { IWertListe } from './IWertListe';
-import { Jahr, Monat, Tag, Tage, Zeit } from './Periode';
+import { Zeit } from './Periode';
 import { WetterViewBase } from './WetterViewBase';
 import { DataTransferService } from './datatransfer.service';
 
@@ -21,7 +21,7 @@ export class DiagramBase extends WetterViewBase {
         super(route, wetter, toParent);
     }
 
-    makeRange(dims, data, values, typ) {
+    makeRange(dims, data, values, typ: Zeit) {
 
         let center = false;
 
@@ -58,7 +58,7 @@ export class DiagramBase extends WetterViewBase {
         dims.dx = (dims.width * 0.99 - 1.5 * dims.x1) / (typ.indexn - typ.index0);
     }
 
-    makeCurves(obj, data, dims, typ, values) {
+    makeCurves(obj, data, dims, typ: Zeit, values) {
 
         for (const v of values) {
             obj[v] = '';
@@ -75,7 +75,7 @@ export class DiagramBase extends WetterViewBase {
         }
     }
 
-    makeRects(obj, data, dims, typ, values) {
+    makeRects(obj, data, dims, typ: Zeit, values) {
 
         for (const v of values) {
             obj[v] = [];
@@ -99,7 +99,7 @@ export class DiagramBase extends WetterViewBase {
         }
     }
 
-    makeAxes(obj, data, dims, typ) {
+    makeAxes(obj, data, dims, typ: Zeit) {
         obj.tickYx = dims.x1 - 5;
         obj.tickYy = [];
         obj.tickYTag = [];

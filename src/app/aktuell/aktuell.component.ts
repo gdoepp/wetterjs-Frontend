@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
-import 'rxjs/add/operator/switchMap';
-
 import { WetterService } from '../wetter.service';
-import {IWertListe} from '../IWertListe';
 import {TableBase} from '../TableBase';
 import { DataTransferService } from '../datatransfer.service';
 

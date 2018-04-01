@@ -25,7 +25,7 @@ export class Zeit {
             mon1st0 += this.monlen[j];
         }
     }
-    index(tv, offset) {
+    index(tv, offset = 0) {
         return 0;
     }
     tick() {
@@ -47,8 +47,7 @@ export class Jahr extends Zeit {
         this.indexn = 12;
     }
 
-    index(tv, offset) { // x-Koordinaten in Welt-Einheiten:
-        if (!offset) { offset = 0; }
+    index(tv, offset = 0) { // x-Koordinaten in Welt-Einheiten:
         const mon = tv.monat.split('.', 2);
         return mon[0] - 1 + offset;
     }
@@ -97,8 +96,7 @@ export class Monat extends Zeit {
         this.nachher = nmonat;
     }
 
-    index(tv, offset) { // x-Koordinaten in Welt-Einheiten:
-        if (!offset) { offset = 0; }
+    index(tv, offset = 0) { // x-Koordinaten in Welt-Einheiten:
         return tv.tag - 1 + offset;   // Tageszahl: 1-31 (relativ zur Beschriftung: Tagesmitte
     }
 
@@ -164,8 +162,7 @@ export class Tag extends Zeit {
         this.super = this.monat;
     }
 
-    index(tv, offs) {      // x-Koordinate
-        if (!offs) { offs = 0; }
+    index(tv, offs = 0) {      // x-Koordinate
         const hm = tv.time_t.split(':');
         const j = hm[0] * 4 + Math.round((hm[1] ) / 15);
         return j;   // Stunde + Viertelstunde: 0 - 23*4+3
@@ -211,9 +208,8 @@ export class Tage extends Tag {
         this.items = 24 * 3 * 4;
     }
 
-    index(tv, offs) {      // x-Koordinate: Stunde 0 - 3*24*4
+    index(tv, offs = 0) {      // x-Koordinate: Stunde 0 - 3*24*4
 
-        if (!offs) { offs = 0; }
         const t = toDay(tv.day);
         const t1 = (t.getTime() - this.tag1) / (24 * 60 * 60 * 1000);
         const hm = tv.time_t.split(':');

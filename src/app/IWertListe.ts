@@ -6,9 +6,5 @@ export class IWertListe {
     type: string;
     rows: any[];
     time: string;
-    uplink: string;
-    prvlink: string;
-    nxtlink: string;
-    t3link: string;
-    t1link: string;
+    links: any[];
 }

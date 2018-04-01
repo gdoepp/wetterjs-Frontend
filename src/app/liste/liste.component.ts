@@ -4,9 +4,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 import { WetterService } from '../wetter.service';
-import {IWertListe} from '../IWertListe';
 import {TableBase} from '../TableBase';
-import { Jahr, Monat, Tag, Zeit } from '../Periode';
+import { Zeit } from '../Periode';
 import { Subscription } from 'rxjs/Subscription';
 import { environment } from '../../environments/environment';
 import { DataTransferService } from '../datatransfer.service';

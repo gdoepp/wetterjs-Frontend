@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 
 import { WetterService } from '../wetter.service';
 import { IStationListe } from '../IStationListe';
-import { Jahr, Monat, Tag, Zeit } from '../Periode';
+import { Zeit } from '../Periode';
 import { DataTransferService } from '../datatransfer.service';
 import { Subscription } from 'rxjs/Subscription';
 import { isUndefined } from 'util';
