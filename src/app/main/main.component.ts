@@ -9,6 +9,7 @@ import { IStationListe } from '../IStationListe';
 import { Jahr, Monat, Tag, Zeit } from '../Periode';
 import { DataTransferService } from '../datatransfer.service';
 import { Subscription } from 'rxjs/Subscription';
+import { isUndefined } from 'util';
 
 @Component({
   selector: 'app-main',
@@ -134,6 +135,7 @@ export class MainComponent implements OnInit, OnDestroy {
        if (Number.parseInt(this.stationListe.stats[s].id) === this.stat) {
          this.station = this.stationListe.stats[s].name;
          this.vals = this.stationListe.stats[s].vals;
+         if (!this.vals[this.value]) { this.value = '-'; }
          break;
        }
     }
@@ -173,6 +175,7 @@ export class MainComponent implements OnInit, OnDestroy {
   goDP(time, value, per) {
     if (per === 'Tage' && this.value !== value) { per = 'Tag'; }
     this.value = value;
+    if (isUndefined(time)) { time = this.jahr; per = 'Jahr'; }
     time = this.checkTime(time);
     this.time = time;
     this.per = per;
@@ -181,6 +184,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   goList(time, per) {
+    if (isUndefined(time)) { time = this.jahr; per = 'Jahr'; }
     time = this.checkTime(time);
     this.time = time;
     if (per === 'Tage') { per = 'Tag'; }
