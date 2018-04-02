@@ -33,31 +33,31 @@
      
 	<tr>
 	  <td>Einstieg Jahr</td>
-	  <td><button id='yl' (click)="goList(jahr, 'Monate')">Liste</button></td>
+	  <td><button id='yl' (click)="gotoValue(jahr, 'List', 'Jahr')">Liste</button></td>
 	  
 	  <td *ngFor='let val of vals'>
 	     <button id='y{{values[val].id}}' 
-			 				(click)="goDP(jahr, val, 'Monate')">
+			 				(click)="gotoValue(jahr, val, 'Jahr')">
 	          <img src='assets/diagr_{{values[val].im}}.png'/>
 	     </button>
 	  </td>
 	</tr>
 	<tr>
 	  <td>Umschalten nach</td>
-	  <td><button id='sl' (click)="goList(time, per)">Liste</button></td>
+	  <td><button id='sl' (click)="gotoValue(time, 'List', per)">Liste</button></td>
 	  <td *ngFor='let val of vals'>
 	     <button id='s{{values[val].id}}' 
-			 			(click)="goDP(this.time, val, per)">
+			 			(click)="gotoValue(time, val, per)">
 	            <img src='assets/diagr_{{values[val].im}}.png'/>
 	     </button>
 	  </td>
 	</tr>
 	<tr >
-	  <td><button id='ta' (click)="goAktuell(0)">Heute/Gestern</button></td>
-	  <td><button id='tl' (click)="goList(0, 'Tag')">Liste</button></td>
+	  <td><button id='ta' (click)="goAktuell()">Heute/Gestern</button></td>
+	  <td><button id='tl' (click)="gotoValue(0, 'List', 'Tag')">Liste</button></td>
   	  <td *ngFor='let val of vals'>
 	     <button id='t{{values[val].id}}' 
-			 			(click)="goDP(0, val, 'Tag')">
+			 			(click)="gotoValue(0, val, 'Tag')">
 	            <img src='assets/diagr_{{values[val].im}}.png'/>
 	     </button>
 	  </td>
@@ -66,8 +66,8 @@
 </table>
 <br/>
 <br/>
-<button *ngIf="admin" (click)="update()" class='adminbutton'>update</button>
-<button *ngIf="admin" (click)="importHist()" class='adminbutton'>import history</button>
+<button *ngIf="admin" (click)="update(links['templateUpdateLink'])" class='adminbutton'>update</button>
+<button *ngIf="admin" (click)="update(links['templateHistoryLink'])" class='adminbutton'>import history</button>
 <button (click)="reload()" >Neu laden</button>
 <div *ngIf="!admin" class='adminbutton'>Eingeschränkter Modus: Gast</div>
 

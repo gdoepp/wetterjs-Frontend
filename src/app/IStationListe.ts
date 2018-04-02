@@ -10,9 +10,12 @@ class IStation {
 class IJahre {
     stat: number;
     jahr: number;
-    link: string;
 }
-
+class ILinks {
+    rel: string;
+    href: string;
+    method: string;
+}
 
 export class IStationListe {
     stats: IStation[];
@@ -20,4 +23,5 @@ export class IStationListe {
     stat: string;
     station: string;
     rows: IJahre[];
+    links: ILinks[];
 }

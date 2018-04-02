@@ -77,12 +77,7 @@ export class WetterService {
 
   }
 
-  update(stat: string) {
-    return this.http.post(this.wetterUrl + '/update/' + stat, '');
+  post(path: string) {
+    return this.http.post(this.wetterUrl + path, '');
   }
-  importHist(stat: string) {
-    return this.http.post(this.wetterUrl + '/import/' + stat, '');
-
-  }
-
 }

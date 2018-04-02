@@ -12,25 +12,19 @@ import { WetterService } from '../wetter.service';
 })
 export class UpdateComponent implements OnInit {
 
-  public result;
+  public result = { update: 2 };
 
   constructor(private wetter: WetterService, private route: ActivatedRoute) {
    }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      const stat = params.get('stat');
-      const op = params.get('operation');
-      if (op === 'update') {
-        this.wetter.update(stat).subscribe( data  => {
-          this.result = data;
+
+      const link = params.get('link');
+
+      this.wetter.post(link).subscribe( data  => {
+      this.result.update = data['update'];
         });
-      }
-      if (op === 'importHist') {
-        this.wetter.importHist(stat).subscribe( data  => {
-          this.result = data;
-        });
-      }
   });
   }
 }

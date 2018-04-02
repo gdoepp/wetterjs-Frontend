@@ -32,12 +32,7 @@ export class MainComponent implements OnInit, OnDestroy {
         this.goLink(data.link, data.value);
       }
       if (data.operation === 'goto') {
-        if (!data.value || data.value === 'List') {
-          this.goList(data.time, data.per);
-        } else {
-          if (data.time === 0) { data.time = this.time; }
-          this.goDP(data.time, data.value, data.per);
-        }
+        console.log('Error: goto!');
       }
     });
   }
@@ -57,6 +52,8 @@ export class MainComponent implements OnInit, OnDestroy {
   protected perObj: Zeit;
   private subscribed: Subscription;
   public vals: string[];
+  public links: {};
+  private rxParam: RegExp = new RegExp(/[{]{2}([A-Za-z0-9_]+)[}]{2}/);
 
   public values = {'temp': {name: 'Temperatur', func: 'T', id: 't', im: 'c'},
   'pres': {name: 'Luftdruck', func: 'P', id: 'p', im: 'c2'},
@@ -81,9 +78,13 @@ export class MainComponent implements OnInit, OnDestroy {
         this.tag = 1;
         this.monat = 1;
         this.time = this.jahr.toString();
-        this.per = 'Monate';
+        this.per = 'Jahr';
         this.value = '-';
         this.updateJahre(this.stationListe);
+        this.links = {};
+        for (const link of data.links) {
+          this.links[link.rel + 'Link'] = link.href;
+        }
      });
   }
 
@@ -142,13 +143,13 @@ export class MainComponent implements OnInit, OnDestroy {
 
     this.updateJahre(this.stationListe);
     if (this.value === '-') {
-        this.go('aktuell', {stat: this.stat, time: 0, per: 'aktuell'});
+        this.goAktuell();
     } else {
-      this.go('.', {time: this.time, stat: this.stat, per: this.per, value: this.value});
+      this.gotoValue(this.time, this.value, this.per);
     }
   }
 
-  checkTime (time: string)  {  // utility
+ private checkTime (time: string)  {  // utility
     time = time.toString();
     if (time === '0') {
       const h = new Date();
@@ -161,39 +162,37 @@ export class MainComponent implements OnInit, OnDestroy {
     return time;
   }
 
-  goAktuell(time) {
-    this.go('/aktuell', {stat: this.stat, per: 'aktuell', time: '0'});
-    this.value = '';
+  private interpolate(link) {
+    let match;
+    while (match = link.match(this.rxParam)) {
+      link = link.replace(match[0], this[match[1]]);
+    }
+    return link;
+  }
+
+  goAktuell() {
+    const link = this.interpolate(this.links['templateAktuellLink']);
+    this.go('/aktuell', {link: link, value: '-' });
   }
 
   goLink(link: string, value: string) {
     let path = 'listPeriode';
     if (value !== 'List') { path += 'D' + this.values[value].func; }
+    link = this.interpolate(link);
     this.go(path, {link: link, value: value });
   }
 
-  goDP(time, value, per) {
+  gotoValue(time, value, per) {
     if (per === 'Tage' && this.value !== value) { per = 'Tag'; }
     this.value = value;
     if (isUndefined(time)) { time = this.jahr; per = 'Jahr'; }
     time = this.checkTime(time);
     this.time = time;
     this.per = per;
-    this.go('listPeriodeD' + this.values[value].func, {time: time, stat: this.stat,
-      per: this.per, value: value, station: this.station });
+    this.goLink(this.links['template' + per + 'Link'], this.value);
   }
 
-  goList(time, per) {
-    if (isUndefined(time)) { time = this.jahr; per = 'Jahr'; }
-    time = this.checkTime(time);
-    this.time = time;
-    if (per === 'Tage') { per = 'Tag'; }
-    this.per = per;
-    this.value = 'List';
-    this.go('listPeriode' , {time: time, stat: this.stat, per: per, value: 'List'});
-  }
-
-  go(path: string, args: object) {
+  private go(path: string, args: object) {
     this.router.navigate([path, args]);
   }
 
@@ -201,12 +200,9 @@ export class MainComponent implements OnInit, OnDestroy {
     location.reload();
   }
 
-  update() {
-    this.go('update', {stat: this.stat, operation: 'update'});
-    this.value = '-';
-  }
-  importHist() {
-    this.go('update', {stat: this.stat, operation: 'importHist'});
+  update(link: string) {
+    link = this.interpolate(link);
+    this.go('update', {link: link});
     this.value = '-';
   }
 
