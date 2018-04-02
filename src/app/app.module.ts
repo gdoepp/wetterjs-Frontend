@@ -17,7 +17,7 @@ import { ListeComponent } from './liste/liste.component';
 import { UpdateComponent } from './update/update.component';
 
 const appRoutes: Routes = [
-  { path: '', redirectTo: '/aktuell;stat=0;per=aktuell', pathMatch: 'full' },
+  { path: '', redirectTo: '/aktuell?stat=0', pathMatch: 'full' },
   { path: 'aktuell', component: AktuellComponent },
   { path: 'update', component: UpdateComponent },
   { path: 'listPeriodeDT', component: PeriodeDtComponent },

@@ -17,7 +17,7 @@
   [attr.points]="y"
 	  style="fill:none;stroke:black;stroke-width:1px" />
 	
-	<rect class='button' *ngFor="let t of data.link; let i=index"
+	<rect sel="link" class='button' *ngFor="let t of data.link; let i=index"
 	   [attr.x]="data.x[i]" [attr.y]="data.tickXy-20"
 	   [attr.width]="data.tickXwidth" [attr.height]="data.tickXheight*2"
 	   (click)="link(t, 'down')" >

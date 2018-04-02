@@ -2,7 +2,7 @@
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { WetterService } from '../wetter.service';
 import { IStationListe } from '../IStationListe';
@@ -20,20 +20,30 @@ import { HttpUrlEncodingCodec } from '@angular/common/http';
 export class MainComponent implements OnInit, OnDestroy {
 
   constructor(private wetter: WetterService, private router: Router,
-        fromChild: DataTransferService) {
+        fromChild: DataTransferService, private route: ActivatedRoute) {
 
     this.time = '';
 
     this.subscribed = fromChild.fromChild.subscribe(data => {
-      if (data.operation === 'time') {
+      if (data.operation === 'params') {
+        if (isUndefined(data.time)) { return; }
         this.time = data.time;
         this.per = data.per;
+        this.value = data.value;
+        const needsUpdateStat =  (this.stat !== data.stat);
+        this.stat = data.stat;
+        this.statStr = this.pad(data.stat, 5);
+        const jahr = Number.parseInt(this.time.substr(this.time.search(/[0-9]{4}/), 4));
+        this.jahr = jahr;
+        const needsUpdateJahr = (jahr !== this.jahr);
+        if (needsUpdateStat) {
+          this.statChanged(null);
+        } else if (needsUpdateJahr) {
+          this.updateYear(null);
+        }
       }
       if (data.operation === 'link') {
         this.goLink(data.link, data.value);
-      }
-      if (data.operation === 'goto') {
-        console.log('Error: goto!');
       }
     });
   }
@@ -47,8 +57,6 @@ export class MainComponent implements OnInit, OnDestroy {
   public station: string;
   public time: string;
   public value: string;
-  public tag: number;
-  public monat: number;
   public per: string;
   protected perObj: Zeit;
   private subscribed: Subscription;
@@ -68,6 +76,12 @@ export class MainComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    this.route.paramMap.subscribe(params => {
+      for (const p of params.keys) {
+        console.log('main param: ' + p);
+      }
+    });
+
      this.wetter.getStationen().subscribe( data  => {
         this.stationListe = data;
         this.statStr = data.stats[0].id;
@@ -76,8 +90,6 @@ export class MainComponent implements OnInit, OnDestroy {
         this.vals = data.stats[0].vals;
         this.admin = data.admin;
         this.jahr = new Date().getFullYear();
-        this.tag = 1;
-        this.monat = 1;
         this.time = this.jahr.toString();
         this.per = 'Jahr';
         this.value = '-';
@@ -85,8 +97,9 @@ export class MainComponent implements OnInit, OnDestroy {
         for (const link of data.links) {
           this.links[link.rel + 'Link'] = link.href;
         }
+
         this.updateJahre(this.stationListe);
-        this.goAktuell();
+        if (this.router.url.indexOf('aktuell') >= 0) { this.goAktuell(); }
      });
   }
 
@@ -125,10 +138,15 @@ export class MainComponent implements OnInit, OnDestroy {
     console.log('update year: ' + this.jahr);
     this.time = this.time.replace(/[0-9]{4}/, this.jahr.toString());
     if (this.value === '-') {
-      this.go('aktuell', {stat: this.stat, time: 0, per: 'aktuell'});
+      this.goAktuell();
     } else {
-      this.go('.', {time: this.time, stat: this.stat, per: this.per, value: this.value});
+      this.gotoValue(this.time, this.value, this.per);
     }
+  }
+
+  private pad (s, size) {
+    while (s.length < (size || 2)) { s = '0' + s; }
+    return s;
   }
 
   statChanged(ev) {
@@ -138,12 +156,15 @@ export class MainComponent implements OnInit, OnDestroy {
        if (Number.parseInt(this.stationListe.stats[s].id) === this.stat) {
          this.station = this.stationListe.stats[s].name;
          this.vals = this.stationListe.stats[s].vals;
-         if (!this.vals[this.value]) { this.value = '-'; }
+         if (this.value !== 'List' && !this.vals.includes(this.value)) { this.value = '-'; }
          break;
        }
     }
 
     this.updateJahre(this.stationListe);
+
+    if (ev === null) { return; } // we are done, this is a synthetic event
+
     if (this.value === '-') {
         this.goAktuell();
     } else {
@@ -151,7 +172,7 @@ export class MainComponent implements OnInit, OnDestroy {
     }
   }
 
- private checkTime (time: string)  {  // utility
+  private checkTime (time: string)  {  // utility
     time = time.toString();
     if (time === '0') {
       const h = new Date();
@@ -186,7 +207,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   gotoValue(time, value, per) {
-    if (per === 'Tage' && this.value !== value) { per = 'Tag'; }
+    if (per === 'Tage') { per = 'Tag'; }
     this.value = value;
     if (isUndefined(time)) { time = this.jahr; per = 'Jahr'; }
     time = this.checkTime(time);

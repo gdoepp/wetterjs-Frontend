@@ -71,7 +71,7 @@ export class PeriodeDpComponent extends DiagramBase implements OnInit {
         values.push('hum_o');
         if (data.length > 0 && data[data.length - 1]['hum_i']) { values.push('hum_i'); }
     }
-    if (feld === 'lum') {
+    if (feld === 'lum') {  // log scale
         dims.minUnits = 3;
         values.push('lum_o');
         dims.scalefn = function (x) { return x > 1e-2 ? Math.log(x) / Math.log(10) : -2; }; // min: half moon

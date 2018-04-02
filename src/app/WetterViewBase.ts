@@ -28,11 +28,12 @@ export class WetterViewBase {
     }
 
     init(offset: number = 0) {
-        // console.log('parent: ' + this.route.parent.component.valueOf());
+
         this.route.paramMap.subscribe(params => {
           const link = params.get('link');
           this.value = params.get('value');
           if (link) {
+              console.log('update link: ' + link);
               this.updateLink(link);
             }
         });
@@ -52,9 +53,11 @@ export class WetterViewBase {
         }
         this.per = data.type;
         this.time = data.time;
+        this.stat = data.stat;
 
         let perObj: Zeit;
-        this.toParent.sendToParent({operation: 'time', time: this.time, per: this.per});
+        console.log('send params: ' + this.time + ' ' + this.value);
+        this.toParent.sendToParent({operation: 'params', time: this.time, per: this.per, value: this.value, stat: this.stat});
         switch (this.per) {
         case 'Monate':
         case 'Jahr':
@@ -91,28 +94,8 @@ export class WetterViewBase {
     }
 
     link(lnk: string) {
+        console.log('send link: ' + lnk);
         this.toParent.sendToParent({operation: 'link', link: lnk, value: this.value});
     }
-
-    goto(t: string, dir: string) {
-        console.log('emitting event goto... ' + t + ' ' + dir);
-        let per = this.per;
-        if (dir === 'up') {
-            per = this.parent;
-        }
-        if (dir === 'down') {
-          if (this.per === 'Monate') { per = 'Monat'; }
-          if (this.per === 'Monat') { per = 'Tag'; }
-        }
-        if (dir === '3Tage') {
-            per = 'Tage';
-        }
-        if (dir === '1Tag') {
-            per = 'Tag';
-        }
-
-        this.toParent.sendToParent({operation: 'goto', time: t, value: this.value, per: per});
-
-      }
 
 }
