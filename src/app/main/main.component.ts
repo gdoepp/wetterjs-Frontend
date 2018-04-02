@@ -10,6 +10,7 @@ import { Zeit } from '../Periode';
 import { DataTransferService } from '../datatransfer.service';
 import { Subscription } from 'rxjs/Subscription';
 import { isUndefined } from 'util';
+import { HttpUrlEncodingCodec } from '@angular/common/http';
 
 @Component({
   selector: 'app-main',
@@ -80,11 +81,12 @@ export class MainComponent implements OnInit, OnDestroy {
         this.time = this.jahr.toString();
         this.per = 'Jahr';
         this.value = '-';
-        this.updateJahre(this.stationListe);
         this.links = {};
         for (const link of data.links) {
           this.links[link.rel + 'Link'] = link.href;
         }
+        this.updateJahre(this.stationListe);
+        this.goAktuell();
      });
   }
 
@@ -167,6 +169,7 @@ export class MainComponent implements OnInit, OnDestroy {
     while (match = link.match(this.rxParam)) {
       link = link.replace(match[0], this[match[1]]);
     }
+    link = encodeURIComponent(link);
     return link;
   }
 

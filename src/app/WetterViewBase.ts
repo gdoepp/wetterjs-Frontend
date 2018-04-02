@@ -34,20 +34,8 @@ export class WetterViewBase {
           this.value = params.get('value');
           if (link) {
               this.updateLink(link);
-            } else {
-                const time = params.get('time');
-                this.stat = Number.parseInt(params.get('stat'));
-                const per = params.get('per');
-                this.offset = offset;
-                this.update(time, per);
             }
         });
-    }
-
-    update(time, per) {
-        this.per = per;
-        if (time === 0) { time = this.time; } else { this.time = time; }
-        this.wetter.getListPeriode(time, per, this.stat).subscribe( this.processData.bind(this));
     }
 
     updateLink(link) {
