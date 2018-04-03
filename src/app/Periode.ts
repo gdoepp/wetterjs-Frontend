@@ -195,7 +195,7 @@ export class Tage extends Tag {
         for (let j = 0; j <= 3 * 24; j += 3) {
             const t = new Date(this.tag1);
             t.setDate(t.getDate() + Math.floor(j / 24));
-            x.push(t.getDate() + '.' + this.pad(j % 24, 2));
+            x.push(t.getDate() + '-' + this.pad(j % 24, 2));
         }
 
         this.xaxis = x;

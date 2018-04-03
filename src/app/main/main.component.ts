@@ -207,7 +207,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   gotoValue(time, value, per) {
-    if (per === 'Tage') { per = 'Tag'; }
+    if (per === 'Tage' && value !== this.value) { per = 'Tag'; }
     this.value = value;
     if (isUndefined(time)) { time = this.jahr; per = 'Jahr'; }
     time = this.checkTime(time);
