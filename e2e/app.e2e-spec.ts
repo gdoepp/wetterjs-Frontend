@@ -260,7 +260,9 @@ it('should have working navigation (2)', async () => {
 
   await element(by.cssContainingText('option', 'Hamburg')).click(); // #2
 
-  // this only works if Hamburg has data starting in 2016 before August.
+  // !!! I M P O R T A N T !!!
+  // this only works if Hamburg has data starting in 2016 before August, but not until 2015
+
   expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 11.8.2016');
 
   await element(by.id('tfm')).click(); // #3

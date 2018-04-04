@@ -23,6 +23,7 @@ export class WetterService {
   public wetterUrl = environment.baseUrl;
 
   getStationen(): Observable<IStationListe> {
+    console.log('get stats: ');
     return this.http.get<IStationListe>(this.wetterUrl + '/', httpOptions);
   }
 

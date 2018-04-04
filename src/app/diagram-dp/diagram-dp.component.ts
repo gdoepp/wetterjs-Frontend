@@ -15,9 +15,24 @@ import { DataTransferService } from '../datatransfer.service';
 })
 export class PeriodeDpComponent extends DiagramBase implements OnInit {
 
+    private phenWerte = {
+        'hum': 'rel. Feuchte', 'hum_o': 'rel. Feuchte', 'hum_i': 'rel. Feuchte innen', 'pres': 'Luftdruck',
+        'precip': 'Niederschlag', 'sun': 'Sonne', 'cloud': 'Wolken', 'lum': 'Helligkeit', 'lum_o': 'Helligkeit', 'lum_i': 'Helligkeit innen'
+    };
+    private phenCols = {
+        'hum_i': 'orange', 'hum_o': 'brown', 'pres': 'blue',
+        'precip': 'blue', 'sun': 'yellow', 'cloud': 'gray', 'lum_o': 'goldenrod', 'lum_i': 'darkorange'
+    };
+
+    private units = {
+        'hum': '%', 'hum_o': '%', 'hum_i': '%', 'pres': 'hPa',
+        'precip': 'mm', 'sun': 'h', 'cloud': '/8', 'lum': '', 'lum_o': '', 'lum_i': ''
+    };
+
+
   constructor(route: ActivatedRoute, wetter: WetterService, toParent: DataTransferService) {
     super(route, wetter, toParent);
-    this.data = {werte: {}};
+    this.data = { werte: this.phenWerte, cols: this.phenCols };
   }
 
   ngOnInit() {
@@ -33,30 +48,15 @@ export class PeriodeDpComponent extends DiagramBase implements OnInit {
     const typ = this.perObj;
     const feld = this.value;
 
-    const phenCols = {
-        'hum_i': 'orange', 'hum_o': 'brown', 'pres': 'blue',
-        'precip': 'blue', 'sun': 'yellow', 'cloud': 'gray', 'lum_o': 'goldenrod', 'lum_i': 'darkorange'
-    };
-
-    const phenWerte = {
-        'hum': 'rel. Feuchte', 'hum_o': 'rel. Feuchte', 'hum_i': 'rel. Feuchte innen', 'pres': 'Luftdruck',
-        'precip': 'Niederschlag', 'sun': 'Sonne', 'cloud': 'Wolken', 'lum': 'Helligkeit', 'lum_o': 'Helligkeit', 'lum_i': 'Helligkeit innen'
-    };
-    const units = {
-        'hum': '%', 'hum_o': '%', 'hum_i': '%', 'pres': 'hPa',
-        'precip': 'mm', 'sun': 'h', 'cloud': '/8', 'lum': '', 'lum_o': '', 'lum_i': ''
-    };
-
     const data = obj.rows;
     obj.rows = undefined;
+    obj.werte = this.phenWerte;
+    obj.cols = this.phenCols;
 
     const dims = { height: 870, width: 1600, x1: 90, minUnits: 1, mny: undefined, mxy: undefined,
         mxyLimit: undefined, mnyLimit: undefined, scalefn: undefined, scalefninv: undefined };
 
-    obj.cols = phenCols;
-    obj.werte = phenWerte;
-
-    this.data.unit = units[feld];
+    this.data.unit = this.units[feld];
     if (typ instanceof Tag && feld === 'sun') { this.data.unit = 'min'; }
 
     const values = [];
@@ -93,6 +93,8 @@ export class PeriodeDpComponent extends DiagramBase implements OnInit {
     }
     obj.values = values;
     this.makeAxes(obj, data, dims, typ);
+
+    console.log('prepare phen finished: ' + this.value);
   }
 
 }

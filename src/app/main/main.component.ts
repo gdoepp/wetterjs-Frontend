@@ -20,32 +20,9 @@ import { HttpUrlEncodingCodec } from '@angular/common/http';
 export class MainComponent implements OnInit, OnDestroy {
 
   constructor(private wetter: WetterService, private router: Router,
-        fromChild: DataTransferService, private route: ActivatedRoute) {
+        private transfer: DataTransferService, private route: ActivatedRoute) {
 
     this.time = '';
-
-    this.subscribed = fromChild.fromChild.subscribe(data => {
-      if (data.operation === 'params') {
-        if (isUndefined(data.time)) { return; }
-        this.time = data.time;
-        this.per = data.per;
-        this.value = data.value;
-        const needsUpdateStat =  (this.stat !== data.stat);
-        this.stat = data.stat;
-        this.statStr = this.pad(data.stat, 5);
-        const jahr = Number.parseInt(this.time.substr(this.time.search(/[0-9]{4}/), 4));
-        this.jahr = jahr;
-        const needsUpdateJahr = (jahr !== this.jahr);
-        if (needsUpdateStat) {
-          this.statChanged(null);
-        } else if (needsUpdateJahr) {
-          this.updateYear(null);
-        }
-      }
-      if (data.operation === 'link') {
-        this.goLink(data.link, data.value);
-      }
-    });
   }
 
   public stationListe: IStationListe = new IStationListe() ;
@@ -63,6 +40,7 @@ export class MainComponent implements OnInit, OnDestroy {
   public vals: string[];
   public links: {};
   private rxParam: RegExp = new RegExp(/[{]{2}([A-Za-z0-9_]+)[}]{2}/);
+  private ready = false;
 
   public values = {'temp': {name: 'Temperatur', func: 'T', id: 't', im: 'c'},
   'pres': {name: 'Luftdruck', func: 'P', id: 'p', im: 'c2'},
@@ -82,13 +60,14 @@ export class MainComponent implements OnInit, OnDestroy {
       }
     });
 
-     this.wetter.getStationen().subscribe( data  => {
+    this.wetter.getStationen().subscribe( data  => {
         this.stationListe = data;
         this.statStr = data.stats[0].id;
         this.stat = Number.parseInt(this.statStr);
         this.station = data.stats[0].name;
         this.vals = data.stats[0].vals;
         this.admin = data.admin;
+        console.log('got stats: ' + this.stat);
         this.jahr = new Date().getFullYear();
         this.time = this.jahr.toString();
         this.per = 'Jahr';
@@ -99,12 +78,43 @@ export class MainComponent implements OnInit, OnDestroy {
         }
 
         this.updateJahre(this.stationListe);
+        this.ready = true;  // only now we are really ready for normal service
         if (this.router.url.indexOf('aktuell') >= 0) { this.goAktuell(); }
      });
+
+     this.subscribed = this.transfer.fromChild.subscribe(data => {
+      if (data.operation === 'params') {
+        if (!this.ready) {
+          setTimeout( () => { this.transfer.sendToParent(data); }, 100);  // try later
+          return;
+        }
+        if (isUndefined(data.time)) { return; }
+        this.time = data.time;
+        this.per = data.per;
+        this.value = data.value;
+        const needsUpdateStat =  (this.stat !== data.stat);
+        this.stat = data.stat;
+        this.statStr = this.pad(data.stat, 5);
+        const jahr = Number.parseInt(this.time.substr(this.time.search(/[0-9]{4}/), 4));
+        const needsUpdateJahr = (jahr !== this.jahr);
+        this.jahr = jahr;
+        console.log('got params from child ' + data.per + ', ' + data.value);
+        if (needsUpdateStat) {
+          this.statChanged(null);
+        } else if (needsUpdateJahr) {
+          this.updateYear(null);
+        }
+      }
+      if (data.operation === 'link') {
+        this.goLink(data.link, data.value);
+      }
+    });
+    console.log('subscribed fromChild');
+
   }
 
   ngOnDestroy() {
-    if (this.subscribed) { this.subscribed.unsubscribe(); }
+    if (this.subscribed) { this.subscribed.unsubscribe(); console.log('unsubscribed fromChild'); }
   }
 
   updateJahre(data: IStationListe)  {
@@ -217,6 +227,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   private go(path: string, args: object) {
+    console.log('navigate to ' + path);
     this.router.navigate([path, args]);
   }
 
