@@ -28,7 +28,7 @@ export class WetterViewBase {
     }
 
     init(offset: number = 0) {
-
+        this.offset = offset;
         this.route.paramMap.subscribe(params => {
           const link = params.get('link');
           this.value = params.get('value');

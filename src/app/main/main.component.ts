@@ -166,7 +166,13 @@ export class MainComponent implements OnInit, OnDestroy {
        if (Number.parseInt(this.stationListe.stats[s].id) === this.stat) {
          this.station = this.stationListe.stats[s].name;
          this.vals = this.stationListe.stats[s].vals;
-         if (this.value !== 'List' && !this.vals.includes(this.value)) { this.value = '-'; }
+         let valFound = (this.value === 'List');
+         if (!valFound) {
+           for (const v of this.vals) {
+             if (v === this.value) { valFound = true; break; }
+           }
+         }
+         if (!valFound) { this.value = '-'; }
          break;
        }
     }
