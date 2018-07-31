@@ -12,9 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { WetterService } from './wetter.service';
 import { DataTransferService } from './datatransfer.service';
-import { HttpClient } from 'selenium-webdriver/http';
 import { HttpClientModule } from '@angular/common/http';
-
 import { RouterTestingModule } from '@angular/router/testing';
 
 
@@ -46,14 +44,14 @@ describe('AppComponent', () => {
   }));
 
 
-  it('should create the app', async(() => {
+  it('should create the app', async () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
-  }));
-  it(`should have as title 'app'`, async(() => {
+  });
+  it(`should have as title 'Wetter-Retro'`, async () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app.title).toEqual('Wetter-Retro');
-  }));
+  });
 });

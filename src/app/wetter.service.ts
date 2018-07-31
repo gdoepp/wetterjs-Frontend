@@ -34,7 +34,6 @@ export class WetterService {
 
   }
 
-
   post(path: string) {
     return this.http.post(this.wetterUrl + path, '');
   }

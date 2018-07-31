@@ -9,14 +9,14 @@ describe('UpdateComponent', () => {
   let component: UpdateComponent;
   let fixture: ComponentFixture<UpdateComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(async () => {
     TestBed.configureTestingModule({
       imports: [HttpClientModule, RouterTestingModule.withRoutes([{ path: 'update', component: UpdateComponent }])],
       declarations: [ UpdateComponent ],
       providers: [WetterService, HttpClientModule]
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UpdateComponent);
