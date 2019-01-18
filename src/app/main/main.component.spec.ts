@@ -36,7 +36,7 @@ describe('MainComponent', () => {
       expect(component).toBeTruthy();
   });
 
-  it('should have stations', async () => {
+  it('should have stations', async( () => {
     const req = http.expectOne(environment.baseUrl + '/');
     req.flush({stats: [{id: '00000', name: '####', vals: ['temp', 'hum']},
                         {id: '04928', name: 'Stuttgart', vals: ['temp', 'hum']} ],
@@ -45,5 +45,5 @@ describe('MainComponent', () => {
     component.ngOnInit();
     fixture.detectChanges();
     expect(component.stationListe.stats.length).toBeGreaterThan(1);
-  });
+  }));
 });

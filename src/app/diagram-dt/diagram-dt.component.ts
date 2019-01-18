@@ -26,15 +26,16 @@ export class PeriodeDtComponent extends DiagramBase implements OnInit {
         'temp_o': 'limegreen', 'temp_i1': 'orange', 'temp_o_min': 'blue', 'temp_o_absmin': 'violet',
         'temp_o_max': 'red', 'temp_o_absmax': 'brown', 'temp_o_avg': 'green', 'temp_i1_avg': 'orange',
         'temp_o1': 'limegreen',
-        'temp_i2': 'brown', 'temp_i2_avg': 'orange', 'temp_o2': 'seagreen', 'temp_i3': 'magenta', 'temp_i4': 'coral'
+        'temp_i2': 'brown', 'temp_i2_avg': 'orange', 'temp_o2': 'seagreen', 'temp_i3': 'magenta', 'temp_i4': 'coral',
+        'temp_i5': 'lightsalmon', 'taup': 'blue'
     };
 
     const tempWerte = {
         'temp_o': 'Temp', 'temp_o_min': 'Temp Min', 'temp_o_absmin': 'Temp abs Min',
         'temp_o_max': 'Temp Max', 'temp_o_absmax': 'Temp abs Max', 'temp_o_avg': 'Temp Mittel',
-        'temp_i1': 'Temp innen', 'temp_i1_avg': 'Temp innen Mittel',
-        'temp_i2': 'Temp innen 2', 'temp_i2_avg': 'Temp innen 2 Mittel',
-        'temp_o1': 'Temp1', 'temp_o2': 'Temp2', 'temp_i3': 'Temp innen 3', 'temp_i4': 'Temp innen 4'
+        'temp_i1': 'Temp iW1', 'temp_i1_avg': 'Temp iW1 Mittel',
+        'temp_i2': 'Temp iW2', 'temp_i2_avg': 'Temp iW2 Mittel', 'taup': 'TauPkt',
+        'temp_o1': 'TempW', 'temp_o2': 'TempO', 'temp_i3': 'Temp iB', 'temp_i4': 'Temp iS', 'temp_i5': 'Temp iF'
     };
 
     const data = obj.rows;
