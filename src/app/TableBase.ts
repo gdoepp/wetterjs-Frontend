@@ -16,11 +16,13 @@ export class TableBase extends WetterViewBase {
   'precip': 'Niederschlag', 'sun': 'Sonne', 'cloud': 'Wolken', 'windd': 'Richtung', 'windf': 'Stärke', 'windf_max': 'Stärke max'};
 
   private colWerte2 = {'temp_o': 'Temp', 'temp_o1': 'TempW', 'temp_o_min': 'Temp Min', 'temp_o_absmin': 'Temp abs Min',
-  'temp_o_max': 'Temp Max', 'temp_o_absmax': 'Temp abs Max', 'temp_o_avg': 'Temp Mittel', 'temp_o2': 'TempO',
+  'temp_o_max': 'Temp Max', 'temp_o_absmax': 'Temp abs Max', 'temp_o_avg': 'Temp Mittel', 'temp_o2': 'TempO', 'taup': 'TauP',
+  'hum_o': 'rel. Feuchte', 'pres': 'Luftdruck', 'lum_o': 'Helligkeit',
+  'precip': 'Niederschlag', 'sun': 'Sonne', 'cloud': 'Wolken', 'windd': 'Richtung', 'windf': 'Stärke', 'windf_max': 'Stärke max',
   'temp_i1': 'TempW1', 'temp_i1_avg': 'TempW1 Mittel', 'temp_i2': 'TempW2', 'temp_i2_avg': 'TempW2 Mittel',
-   'temp_i3': 'TempB', 'temp_i4': 'TempS', 'temp_i5': 'TempF', 'taup': 'TauP',
-  'hum_o': 'rel. Feuchte', 'hum_i': 'rel. Feuchte', 'pres': 'Luftdruck', 'lum_o': 'Helligkeit', 'lum_i': 'Helligkeit',
-  'precip': 'Niederschlag', 'sun': 'Sonne', 'cloud': 'Wolken', 'windd': 'Richtung', 'windf': 'Stärke', 'windf_max': 'Stärke max'};
+   'temp_i3': 'TempB', 'temp_i4': 'TempS', 'temp_i5': 'TempF',
+   'hum_i': 'rel. Feuchte', 'lum_i': 'Helligkeit'
+  };
 
   private colGroups1 = {'temp_o': 'Temperatur', 'temp_o1': 'Temperatur', 'temp_o_min': 'Temperatur', 'temp_o_absmin': 'Temperatur',
   'temp_o_max': 'Temperatur', 'temp_o_absmax': 'Temperatur', 'temp_o_avg': 'Temperatur',
@@ -31,9 +33,9 @@ export class TableBase extends WetterViewBase {
 
   private colGroups2 = {'temp_o': 'außen', 'temp_o1': 'außen', 'temp_o_min': 'außen', 'temp_o_absmin': 'außen',
   'temp_o_max': 'außen', 'temp_o_absmax': 'außen', 'temp_o_avg': 'außen', 'temp_o2': 'außen', 'taup': 'außen',
+  'precip': 'außen', 'sun': 'außen', 'cloud': 'außen', 'windd': 'außen', 'windf': 'außen', 'windf_max': 'außen',
   'temp_i1': 'innen', 'temp_i1_avg': 'innen', 'temp_i2': 'innen', 'temp_i2_avg': 'innen', 'temp_i3': 'innen',
-  'hum_o': 'außen', 'hum_i': 'innen', 'pres': 'außen', 'lum_o': 'außen', 'lum_i': 'innen', 'temp_i4': 'innen',
-  'precip': 'außen', 'sun': 'außen', 'cloud': 'außen', 'windd': 'außen', 'windf': 'außen', 'windf_max': 'außen'};
+  'hum_o': 'außen', 'hum_i': 'innen', 'pres': 'außen', 'lum_o': 'außen', 'lum_i': 'innen', 'temp_i4': 'innen', 'temp_i5': 'innen'};
 
   public data: IWertListe = new IWertListe;
   public values: string[] = [];
@@ -74,21 +76,29 @@ export class TableBase extends WetterViewBase {
   this.values = [];
   this.colgrname = [];
   this.colgrlen = [];
+  const colgrfields = [];
   const grpknown = {};
   for (const f in data.rows[0]) {
     if (werte[f]) {
-      this.values.push(f);
       if (groups) {
         const grp = groups[f];
-        const k = grpknown[grp];
+        let k = grpknown[grp];
         if (! (k >= 0)) {
           grpknown[grp] = this.colgrlen.length;
+          k = this.colgrlen.length;
           this.colgrname.push(grp);
           this.colgrlen.push(1);
+          colgrfields.push([]);
         } else {
           this.colgrlen[k]++;
         }
+        colgrfields[k].push(f);
       }
+    }
+  }
+  for (const cg of colgrfields) {
+    for (const f of cg) {
+      this.values.push(f);
     }
   }
   this.werte = werte;
