@@ -1,0 +1,6 @@
+start service: npm js/index.js in service directory
+  -- check credentials for pgdb
+
+start webdriver: webdriver-manager update --standalone; webdriver-manager start
+
+now run: npm run e2e
