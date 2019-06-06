@@ -8,9 +8,10 @@ describe('wetter App', () => {
     page = new AppPage();
   });
 
-  it('should display title', () => {
-    page.navigateTo();
-    expect(page.getParagraphText()).toEqual('Wetter-Rückblick');
+  it('should display title', async () => {
+    await page.navigateTo();
+    browser.waitForAngular();
+    expect(await page.getParagraphText()).toEqual('Wetter-Rückblick');
   });
 
   it('should have stations and years', async () => {
@@ -19,15 +20,15 @@ describe('wetter App', () => {
     await main.navigateTo();
     browser.waitForAngular();
 
-    expect( await element.all(by.xpath('//select[@id="selS"]/option')).count()).toBeGreaterThan(1);
+    expect(await element.all(by.xpath('//select[@id="selS"]/option')).count()).toBeGreaterThan(1);
     expect(await element.all(by.xpath('//select[@id="selY"]/option')).count()).toBeGreaterThan(0);
 
-    element(by.cssContainingText('option', 'Stuttgart')).click();
+    await element(by.cssContainingText('option', 'Stuttgart')).click();
 
     expect(await element.all(by.xpath('//select[@id="selY"]/option')).count()).toBeGreaterThan(10);
 
     // check Aktuell list (latest 8 entries + 2 other elements = 10)
-    expect(element.all(by.className('wettertab')).count()).toEqual(10);
+    expect(await element.all(by.className('wettertab')).count()).toEqual(10);
 });
 
 it('should show diagrams for a year', async () => {
@@ -40,27 +41,27 @@ it('should show diagrams for a year', async () => {
   await element(by.cssContainingText('option', '2018')).click();
 
   await element(by.id('yu')).click();
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(13);
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Jahresverlauf 2018');
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(13);
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Jahresverlauf 2018');
 
   await element(by.cssContainingText('option', 'Stuttgart')).click();
   await element(by.cssContainingText('option', '2017')).click();
 
   for (const id of ['yt', 'yw', 'si', 'yp', 'sc', 'ys']) { // diagrams
     await element(by.id(id)).click();
-    expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(13);
-    expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Jahresverlauf 2017');
+    expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(13);
+    expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Jahresverlauf 2017');
   }
 
   await element(by.id('yl')).click();  // list
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(12);
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(12);
 
   await element(by.cssContainingText('option', '2013')).click();
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Jahresverlauf 2013');
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Jahresverlauf 2013');
 
   await element(by.id('yi')).click();  // list
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(13);
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Niederschlag im Jahresverlauf 2013');
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(13);
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Niederschlag im Jahresverlauf 2013');
 
 });
 
@@ -75,30 +76,30 @@ it('should show diagrams for a month', async () => {
 
   await element(by.id('yp')).click();
 
-  expect(element.all(by.xpath('//*[@sel="link"]')).count()).toEqual(12);
+  expect(await element.all(by.xpath('//*[@sel="link"]')).count()).toEqual(12);
   await element.all(by.xpath('//*[@sel="link"]')).get(6).click(); // July: 31 days plus 1 gives 32
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
 
   await element(by.id('sw')).click();
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
 
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Monatsverlauf 7.2016');
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Monatsverlauf 7.2016');
 
   await element(by.id('si')).click();
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
 
   await element(by.id('sh')).click();
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
 
   await element(by.id('sl')).click();
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(31);
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Monat');
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(31);
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Monat');
 
   await element(by.cssContainingText('option', '2017')).click();
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(31);
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Monatsverlauf 7.2017');
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(31);
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Monatsverlauf 7.2017');
 
 });
 
@@ -114,30 +115,30 @@ it('shows diagrams for a day', async () => {
 
   await element(by.id('yp')).click();
 
-  element.all(by.xpath('//*[@sel="link"]')).get(6).click(); // July: 31 days plus 1 gives 32
+  await element.all(by.xpath('//*[@sel="link"]')).get(6).click(); // July: 31 days plus 1 gives 32
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Monatsverlauf 7.2016');
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Monatsverlauf 7.2016');
 
-  element.all(by.xpath('//*[@sel="link"]')).get(19).click(); // July, 20th
+  await element.all(by.xpath('//*[@sel="link"]')).get(19).click(); // July, 20th
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 20.7.2016');
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 20.7.2016');
 
   await element(by.id('sw')).click();
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
 
   await element(by.cssContainingText('option', '2017')).click();
 
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 20.7.2017');
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 20.7.2017');
 
   await element(by.id('si')).click();
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
 
   await element(by.id('sl')).click(); // list
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(24);
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 20.7.2017');
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(24);
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 20.7.2017');
 
 });
 
@@ -154,69 +155,69 @@ it('should have working navigation (1)', async () => {
 
   await element.all(by.xpath('//*[@sel="link"]')).get(6).click(); // July: 31 days plus 1 gives 32
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
 
   await element.all(by.xpath('//*[@sel="link"]')).get(19).click(); // July, 20th
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
 
   await browser.refresh();
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 20.7.2016');
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 20.7.2016');
 
   await element(by.id('tpp')).click(); // next day, 21th
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 21.7.2016');
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 21.7.2016');
 
   await element(by.id('tpl')).click(); // previous day, 20th
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 20.7.2016');
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 20.7.2016');
 
   await element(by.id('sp')).click(); // pres, hours  #1
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
 
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf');
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf');
 
   await element(by.id('tp3')).click(); // #2
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
 
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('dreier');
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('dreier');
 
   await element(by.cssContainingText('option', 'Frankfurt')).click(); // #3
 
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('dreier Tage');
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('dreier Tage');
 
   await element(by.id('tpm')).click(); // #4
 
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Monatsverlauf 7.2016');
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Monatsverlauf 7.2016');
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
 
   await element(by.id('tpl')).click(); // June #5
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(31); // #3
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(31); // #3
 
   browser.navigate().back();  // #4
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
 
   browser.navigate().back(); // #3
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
 
   browser.navigate().back(); // #2
   browser.navigate().back(); // #1
 
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 20.7.2016');
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 20.7.2016');
 
-  browser.refresh();
+  await browser.refresh();
 
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 20.7.2016');
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 20.7.2016');
 
 
 });
@@ -229,70 +230,70 @@ it('should have working navigation (2)', async () => {
   browser.waitForAngular();
 
   await element(by.cssContainingText('option', 'Stuttgart')).click();
-  await element(by.cssContainingText('option', '1999')).click();
+  await element(by.cssContainingText('option', '1996')).click();
 
   await element(by.id('ys')).click();
 
   await element.all(by.xpath('//*[@sel="link"]')).get(7).click(); // Aug: 31 days plus 1 gives 32
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
 
   await element.all(by.xpath('//*[@sel="link"]')).get(10).click(); // Aug, 11th
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 11.8.1999');
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 11.8.1996');
 
   await element(by.id('trp')).click(); // next day, 12th
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 12.8.1999');
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 12.8.1996');
 
   await element(by.id('trl')).click(); // previous day, 11th
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 11.8.1999');
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 11.8.1996');
 
   await element(by.id('sw')).click(); // wind  #1
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(25);
 
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 11.8.1999');
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 11.8.1996');
 
-  await element(by.cssContainingText('option', 'Hamburg')).click(); // #2
+  await element(by.cssContainingText('option', 'Frankfurt')).click(); // #2
 
   // !!! I M P O R T A N T !!!
-  // this only works if Hamburg has data starting in 2016 before August, but not until 2015
+  // this only works if Frankfurt has data starting in 7.1997 before August, but not before
 
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 11.8.2016');
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 11.8.1997');
 
   await element(by.id('tfm')).click(); // #3
 
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Monatsverlauf 8.2016');
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Monatsverlauf 8.1997');
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
 
   await element(by.id('tfl')).click(); // Jul  #4
   await element(by.id('tfl')).click(); // Jun  #5
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(31);
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(0);
 
   browser.navigate().back();  // #4
 
-  expect(element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
+  expect(await element.all(by.xpath('//*[@sel="test"]')).count()).toEqual(32);
 
   browser.navigate().back(); // #3
 
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Monatsverlauf 8.2016');
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Monatsverlauf 8.1997');
 
   browser.navigate().back(); // #2
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 11.8.2016');
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 11.8.1997');
 
   browser.navigate().back(); // #1
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 11.8.1999');
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 11.8.1996');
 
-  browser.refresh();
+  await browser.refresh();
 
-  expect(element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 11.8.1999');
+  expect(await element.all(by.tagName('h2')).get(1).getText()).toContain('Tagesverlauf 11.8.1996');
 
 
 });
