@@ -113,7 +113,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "wetter:serve"
+            "devServerTarget": "wetter:serve:local"
           }
         },
         "lint": {

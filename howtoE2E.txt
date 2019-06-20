@@ -3,4 +3,4 @@ start service: npm js/index.js in service directory
 
 start webdriver: webdriver-manager update --standalone; webdriver-manager start
 
-now run: npm run e2e
+now run: ng e2e --no-webdriver-update

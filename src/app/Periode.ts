@@ -125,12 +125,14 @@ export class Tag extends Zeit {
     public items: number;
     public heute: string;
     public monat: string;
+    protected tag1: number;
 
     constructor(tag, offset) {
 
         tag = toDay(tag);
 
         super(tag.getFullYear());
+        this.tag1 = tag.getTime();
 
         const x = [];
 
@@ -163,8 +165,11 @@ export class Tag extends Zeit {
     }
 
     index(tv, offs = 0) {      // x-Koordinate
+        const t = toDay(tv.day);
+        const t1 = (t.getTime() - this.tag1) / (24 * 60 * 60 * 1000);
         const hm = tv.time_t.split(':');
-        const j = hm[0] * 4 + Math.round((hm[1] ) / 15);
+        const j = t1 * 24 * 4 + hm[0] * 4 + Math.floor( (hm[1] ) / 15);
+
         return j;   // Stunde + Viertelstunde: 0 - 23*4+3
     }
     tick() {  // x-Koordinate Beschriftung der x-Achse
@@ -180,16 +185,12 @@ export class Tag extends Zeit {
 
 export class Tage extends Tag {
 
-    private tag1: number;
-
     constructor(tag, offset) {
 
         super(tag, offset);
 
         tag = toDay(tag);
-
-        this.tag1 = tag.getTime() - 24 * 60 * 60 * 1000;
-
+        this.tag1 -= 24 * 60 * 60 * 1000; // tag is central day, shift 1 day back
         const x = [];
 
         for (let j = 0; j <= 3 * 24; j += 3) {
@@ -208,15 +209,6 @@ export class Tage extends Tag {
         this.items = 24 * 3 * 4;
     }
 
-    index(tv, offs = 0) {      // x-Koordinate: Stunde 0 - 3*24*4
-
-        const t = toDay(tv.day);
-        const t1 = (t.getTime() - this.tag1) / (24 * 60 * 60 * 1000);
-        const hm = tv.time_t.split(':');
-        const j = t1 * 24 * 4 + hm[0] * 4 + Math.floor( (hm[1] ) / 15);
-
-        return j;   // Tag+Stunde
-    }
     tick() {  // x-Koordinate Beschriftung der x-Achse
         let res;
         res = [];

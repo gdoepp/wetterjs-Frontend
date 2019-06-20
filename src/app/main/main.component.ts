@@ -10,7 +10,6 @@ import { Zeit } from '../Periode';
 import { DataTransferService } from '../datatransfer.service';
 import { Subscription } from 'rxjs/Subscription';
 import { isUndefined } from 'util';
-import { HttpUrlEncodingCodec } from '@angular/common/http';
 
 @Component({
   selector: 'app-main',
@@ -201,24 +200,23 @@ export class MainComponent implements OnInit, OnDestroy {
     return time;
   }
 
-  private interpolate(link) {
+  private interpolate(arg) {  // replace parameters: {name}
     let match;
-    while (match = link.match(this.rxParam)) {
-      link = link.replace(match[0], this[match[1]]);
+    while (match = arg.match(this.rxParam)) {
+      arg = arg.replace(match[0], this[match[1]]);
     }
-    link = encodeURIComponent(link);
-    return link;
+    return arg;
   }
 
   goAktuell() {
-    const link = this.interpolate(this.links['templateAktuellLink']);
+    const link = encodeURIComponent(this.interpolate(this.links['templateAktuellLink']));
     this.go('/aktuell', {link: link, value: '-' });
   }
 
   goLink(link: string, value: string) {
     let path = 'listPeriode';
     if (value !== 'List') { path += 'D' + this.values[value].func; }
-    link = this.interpolate(link);
+    link = encodeURIComponent(this.interpolate(link));
     this.go(path, {link: link, value: value });
   }
 

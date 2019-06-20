@@ -1,7 +1,7 @@
 // (c) Gerhard Döppert, 2018, GNU GPL 3
 
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 import { WetterService } from '../wetter.service';
 

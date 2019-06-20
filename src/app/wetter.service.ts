@@ -28,7 +28,7 @@ export class WetterService {
   }
 
   getListLink(link: string): Observable<IWertListe> {
-    console.log('link->' + decodeURI(link));
+    console.log('link->' + decodeURIComponent(link));
 
     return this.http.get<IWertListe>(this.wetterUrl + decodeURIComponent(link), httpOptions);
 
