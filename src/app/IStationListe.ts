@@ -8,7 +8,7 @@ class IStation {
 }
 
 class IJahre {
-    stat: number;
+    stat: string;
     jahr: number;
 }
 class ILinks {

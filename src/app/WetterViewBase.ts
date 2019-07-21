@@ -13,7 +13,7 @@ export class WetterViewBase {
     public data;
     protected perObj: Zeit;
     protected offset: number;
-    protected stat: number;
+    protected stat: string;
     protected time: string;
     public index_id: string;
     public index_name: string;

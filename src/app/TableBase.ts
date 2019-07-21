@@ -65,7 +65,7 @@ export class TableBase extends WetterViewBase {
   let groups;
   let werte;
 
-  if (this.stat > 0) {
+  if (this.stat !== '00000') {
     groups = this.colGroups1;
     werte = this.colWerte1;
   }  else {

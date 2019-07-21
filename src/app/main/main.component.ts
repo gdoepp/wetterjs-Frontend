@@ -5,11 +5,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { WetterService } from '../wetter.service';
-import { IStationListe } from '../IStationListe';
 import { Zeit } from '../Periode';
 import { DataTransferService } from '../datatransfer.service';
 import { Subscription } from 'rxjs/Subscription';
 import { isUndefined } from 'util';
+import { IStationListe } from '../IStationListe';
+
 
 @Component({
   selector: 'app-main',
@@ -27,7 +28,7 @@ export class MainComponent implements OnInit, OnDestroy {
   public stationListe: IStationListe = new IStationListe() ;
   public jahre: number[];
   public jahr: number;
-  public stat: number;
+  public stat: string;
   public statStr: string;
   public admin: number;
   public station: string;
@@ -61,8 +62,8 @@ export class MainComponent implements OnInit, OnDestroy {
 
     this.wetter.getStationen().subscribe( data  => {
         this.stationListe = data;
-        this.statStr = data.stats[0].id;
-        this.stat = Number.parseInt(this.statStr);
+        this.stat = data.stats[0].id;
+        this.statStr = this.stat;
         this.station = data.stats[0].name;
         this.vals = data.stats[0].vals;
         this.admin = data.admin;
@@ -93,7 +94,7 @@ export class MainComponent implements OnInit, OnDestroy {
         this.value = data.value;
         const needsUpdateStat =  (this.stat !== data.stat);
         this.stat = data.stat;
-        this.statStr = this.pad(data.stat, 5);
+        this.statStr = this.stat;
         const jahr = Number.parseInt(this.time.substr(this.time.search(/[0-9]{4}/), 4));
         const needsUpdateJahr = (jahr !== this.jahr);
         this.jahr = jahr;
@@ -159,10 +160,10 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   statChanged(ev) {
-    this.stat = Number.parseInt(this.statStr);
+    this.stat = this.statStr;
     console.log('stat changed: ' + this.stat);
     for (const s in this.stationListe.stats) {
-       if (Number.parseInt(this.stationListe.stats[s].id) === this.stat) {
+       if (this.stationListe.stats[s].id === this.stat) {
          this.station = this.stationListe.stats[s].name;
          this.vals = this.stationListe.stats[s].vals;
          let valFound = (this.value === 'List');
@@ -191,7 +192,7 @@ export class MainComponent implements OnInit, OnDestroy {
     time = time.toString();
     if (time === '0') {
       const h = new Date();
-      if (this.stat !== 0) {
+      if (this.stat !== '00000') {
         h.setDate(h.getDate() - 1);
       }
       time = h.getDate() + '.' + (h.getMonth() + 1) + '.' + (h.getFullYear());
