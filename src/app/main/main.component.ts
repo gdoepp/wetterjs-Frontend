@@ -211,6 +211,7 @@ export class MainComponent implements OnInit, OnDestroy {
 
   goAktuell() {
     const link = encodeURIComponent(this.interpolate(this.links['templateAktuellLink']));
+    this.value = '-';
     this.go('/aktuell', {link: link, value: '-' });
   }
 
