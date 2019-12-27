@@ -14,7 +14,7 @@ button.dirbutton {
 }
 
 button.adminbutton {
-	background: #ec462c;
+	background: #eb5e48;
 	transition-duration: 0.2s;
 }
 
@@ -22,11 +22,27 @@ button.adminbutton:hover {
 	background: red;
 }
 
+button.menubutton {
+	background: #dbdbce;
+	transition-duration: 0.1s;
+}
+
+button.active {
+	background: #abffae;
+	transition-duration: 0.1s;
+}
+
+
+button.menubutton:hover {
+	background: #f0f0f0;
+}
+
+
 rect.button {
-	fill: #bbb;
+	fill: #dbdbce;
 }
 rect.button:hover {
-	fill: #ccc;
+	fill: #f0f0f0;;
 }
 
 thead tr th {

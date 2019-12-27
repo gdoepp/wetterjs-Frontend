@@ -41,6 +41,7 @@ export class MainComponent implements OnInit, OnDestroy {
   public links: {};
   private rxParam: RegExp = new RegExp(/[{]{2}([A-Za-z0-9_]+)[}]{2}/);
   private ready = false;
+  public selId = '';
 
   public values = {'temp': {name: 'Temperatur', func: 'T', id: 't', im: 'c'},
   'pres': {name: 'Luftdruck', func: 'P', id: 'p', im: 'c2'},
@@ -49,7 +50,8 @@ export class MainComponent implements OnInit, OnDestroy {
     'cloud': {name: 'Wolken', func: 'N', id: 'c', im: 'rg'},
     'lum': {name: 'Helligkeit', func: 'L', id: 'u', im: 'c3'},
     'sun': {name: 'Sonne', func: 'S', id: 's', im: 'ry'},
-    'wind': {name: 'Wind', func: 'F', id: 'w', im: 'rv'}
+    'wind': {name: 'Wind', func: 'F', id: 'w', im: 'rv'},
+    'list': {name: '', func: '', id: 'l', im: ''}
   };
 
 
@@ -166,7 +168,7 @@ export class MainComponent implements OnInit, OnDestroy {
        if (this.stationListe.stats[s].id === this.stat) {
          this.station = this.stationListe.stats[s].name;
          this.vals = this.stationListe.stats[s].vals;
-         let valFound = (this.value === 'List');
+         let valFound = (this.value === 'List' || this.value === '-');
          if (!valFound) {
            for (const v of this.vals) {
              if (v === this.value) { valFound = true; break; }
@@ -223,13 +225,22 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   gotoValue(time, value, per) {
+    let idLine = '';
+    let idCol = '';
     if (per === 'Tage' && value !== this.value) { per = 'Tag'; }
     this.value = value;
     if (isUndefined(time)) { time = this.jahr; per = 'Jahr'; }
+
+    if (per === 'Jahr') { idLine = 'y'; } else {
+      if (per === 'Tag') { idLine = 't'; }
+    }
+    idCol = (value === 'List' ? 'l' : this.values[this.value].id);
+
     time = this.checkTime(time);
     this.time = time;
     this.per = per;
     this.goLink(this.links['template' + per + 'Link'], this.value);
+    this.selId = idLine + idCol;
   }
 
   private go(path: string, args: object) {
