@@ -59,7 +59,9 @@ export class DiagramBase extends WetterViewBase {
     }
 
     makeCurves(obj, data, dims, typ: Zeit, values) {
-
+        if (values.length === 0 || data.length === 0) {
+            return;
+        }
         for (const v of values) {
             obj[v] = '';
         }
@@ -77,6 +79,9 @@ export class DiagramBase extends WetterViewBase {
 
     makeRects(obj, data, dims, typ: Zeit, values) {
 
+        if (values.length === 0 || data.length === 0) {
+            return;
+        }
         for (const v of values) {
             obj[v] = [];
         }

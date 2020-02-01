@@ -1,12 +1,11 @@
 // (c) Gerhard Döppert, 2018, GNU GPL 3
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 import { WetterService } from '../wetter.service';
 import {TableBase} from '../TableBase';
 import { Zeit } from '../Periode';
-import { Subscription } from 'rxjs/Subscription';
 import { environment } from '../../environments/environment';
 import { DataTransferService } from '../datatransfer.service';
 

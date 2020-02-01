@@ -14,6 +14,7 @@ import { PeriodeDpComponent } from './diagram-dp/diagram-dp.component';
 import { PeriodeDrComponent } from './diagram-dr/diagram-dr.component';
 import { PeriodeDfComponent } from './diagram-df/diagram-df.component';
 import { ListeComponent } from './liste/liste.component';
+import { FormddComponent } from './formdd/formdd.component';
 import { UpdateComponent } from './update/update.component';
 
 const appRoutes: Routes = [
@@ -24,6 +25,8 @@ const appRoutes: Routes = [
   { path: 'listPeriodeDR', component: PeriodeDrComponent },
   { path: 'listPeriodeDN', component: PeriodeDrComponent },
   { path: 'listPeriodeDS', component: PeriodeDrComponent },
+  { path: 'listPeriodeDD', component: PeriodeDrComponent },
+  { path: 'listPeriodeDDD', component: FormddComponent },
   { path: 'listPeriodeDL', component: PeriodeDpComponent },
   { path: 'listPeriodeDH', component: PeriodeDpComponent },
   { path: 'listPeriodeDP', component: PeriodeDpComponent },
@@ -41,7 +44,9 @@ const appRoutes: Routes = [
     PeriodeDrComponent,
     PeriodeDfComponent,
     ListeComponent,
-    UpdateComponent
+    FormddComponent,
+    UpdateComponent,
+    FormddComponent
   ],
   imports: [
     BrowserModule,

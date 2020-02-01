@@ -1,0 +1,20 @@
+<h2>Morgen und Abend</h2>
+<h2>{{tag}}</h2>
+<table border='0' ts-wrapper>
+<tr>
+  <td>Morgen</td><td>{{dawn}}</td>
+</tr>
+<tr>
+  <td>Abend</td><td>{{dusk}}</td>
+</tr>
+
+</table>
+<br/>
+<button id="ttm" *ngIf="data['uplink']" 
+(click)="link(data['uplink'], 'up')">Monat</button>
+
+<button  id="ttl"   class='dirbutton' *ngIf="data['prvlink']"
+(click)="link(data['prvlink'], 'sibl')">&lt;</button>
+
+<button   id="ttp"  class='dirbutton' *ngIf="data['nxtlink']"
+(click)="link(data['nxtlink'], 'sibl')">&gt;</button>

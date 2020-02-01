@@ -16,16 +16,16 @@ import { DataTransferService } from '../datatransfer.service';
 export class PeriodeDpComponent extends DiagramBase implements OnInit {
 
     private phenWerte = {
-        'hum': 'rel. Feuchte', 'hum_o': 'rel. Feuchte', 'hum_i': 'rel. Feuchte innen', 'pres': 'Luftdruck',
+        'hum': 'rel. Feuchte', 'hum_o': 'rel. Feuchte', 'hum_i': 'rel. Feuchte innen', 'pres': 'Luftdruck', 'daylen': 'Tageslänge',
         'precip': 'Niederschlag', 'sun': 'Sonne', 'cloud': 'Wolken', 'lum': 'Helligkeit', 'lum_o': 'Helligkeit', 'lum_i': 'Helligkeit innen'
     };
     private phenCols = {
-        'hum_i': 'orange', 'hum_o': 'brown', 'pres': 'blue',
+        'hum_i': 'orange', 'hum_o': 'brown', 'pres': 'blue', 'daylen': 'yellow',
         'precip': 'blue', 'sun': 'yellow', 'cloud': 'gray', 'lum_o': 'goldenrod', 'lum_i': 'darkorange'
     };
 
     private units = {
-        'hum': '%', 'hum_o': '%', 'hum_i': '%', 'pres': 'hPa',
+        'hum': '%', 'hum_o': '%', 'hum_i': '%', 'pres': 'hPa', 'daylen': 'h',
         'precip': 'mm', 'sun': 'h', 'cloud': '/8', 'lum': '', 'lum_o': '', 'lum_i': ''
     };
 
@@ -62,7 +62,7 @@ export class PeriodeDpComponent extends DiagramBase implements OnInit {
     const values = [];
 
     if (feld === 'precip') { dims.mny = 0; dims.mxy = 5; }
-    if (feld === 'sun') { dims.mny = 0; dims.minUnits = ( this.per === 'Tag'  ? 60 : 5); }
+    if (feld === 'sun' || feld === 'daylen') { dims.mny = 0; dims.minUnits = ( this.per === 'Tag'  ? 60 : 5); }
     if (feld === 'cloud') { dims.mny = 0; dims.mxy = 8; }
     if (feld === 'hum') {
         dims.minUnits = 30;
@@ -86,7 +86,7 @@ export class PeriodeDpComponent extends DiagramBase implements OnInit {
 
     this.makeRange(dims, data, values, typ);
 
-    if (feld === 'precip' || feld === 'cloud' || feld === 'sun') {
+    if (feld === 'precip' || feld === 'cloud' || feld === 'sun' || feld === 'daylen') {
         this.makeRects(obj, data, dims, typ, values);
     } else {
         this.makeCurves(obj, data, dims, typ, values);

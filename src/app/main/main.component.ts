@@ -50,6 +50,8 @@ export class MainComponent implements OnInit, OnDestroy {
     'cloud': {name: 'Wolken', func: 'N', id: 'c', im: 'rg'},
     'lum': {name: 'Helligkeit', func: 'L', id: 'u', im: 'c3'},
     'sun': {name: 'Sonne', func: 'S', id: 's', im: 'ry'},
+    'daylen': {name: 'Tageslänge', func: 'D', id: 'd', im: 'ry'},
+    'DawnDusk': {name: 'Tag', func: 'DD', id: 'dd', im: 'ry'},
     'wind': {name: 'Wind', func: 'F', id: 'w', im: 'rv'},
     'list': {name: '', func: '', id: 'l', im: ''}
   };
@@ -87,9 +89,11 @@ export class MainComponent implements OnInit, OnDestroy {
      this.subscribed = this.transfer.fromChild.subscribe(data => {
       if (data.operation === 'params') {
         if (!this.ready) {
+          console.log('got params from child ' + data.per + ', ' + data.value + ' ... waiting for ready');
           setTimeout( () => { this.transfer.sendToParent(data); }, 100);  // try later
           return;
         }
+        console.log('got params from child ' + data.per + ', ' + data.value);
         if (isUndefined(data.time)) { return; }
         this.time = data.time;
         this.per = data.per;
@@ -100,7 +104,6 @@ export class MainComponent implements OnInit, OnDestroy {
         const jahr = Number.parseInt(this.time.substr(this.time.search(/[0-9]{4}/), 4));
         const needsUpdateJahr = (jahr !== this.jahr);
         this.jahr = jahr;
-        console.log('got params from child ' + data.per + ', ' + data.value);
         if (needsUpdateStat) {
           this.statChanged(null);
         } else if (needsUpdateJahr) {
@@ -108,6 +111,7 @@ export class MainComponent implements OnInit, OnDestroy {
         }
       }
       if (data.operation === 'link') {
+        console.log('got params from child ' + data.link + ', ' + data.value);
         this.goLink(data.link, data.value);
       }
     });
@@ -219,6 +223,9 @@ export class MainComponent implements OnInit, OnDestroy {
 
   goLink(link: string, value: string) {
     let path = 'listPeriode';
+    if (link.indexOf('listTag') >= 0 && value === 'daylen') {
+      value = 'DawnDusk';
+    }
     if (value !== 'List') { path += 'D' + this.values[value].func; }
     link = encodeURIComponent(this.interpolate(link));
     this.go(path, {link: link, value: value });
@@ -240,11 +247,12 @@ export class MainComponent implements OnInit, OnDestroy {
     this.time = time;
     this.per = per;
     this.goLink(this.links['template' + per + 'Link'], this.value);
+
     this.selId = idLine + idCol;
   }
 
   private go(path: string, args: object) {
-    console.log('navigate to ' + path);
+    console.log('navigate to ' + path + ' ' + args['link']);
     this.router.navigate([path, args]);
   }
 

@@ -29,7 +29,7 @@ export class WetterViewBase {
 
     init(offset: number = 0) {
         this.offset = offset;
-        this.route.paramMap.subscribe(params => {
+        this.route.paramMap.subscribe(params => { // will be unsubscribed by route
           const link = params.get('link');
           this.value = params.get('value');
           if (link) {
@@ -40,7 +40,7 @@ export class WetterViewBase {
     }
 
     updateLink(link) {
-        this.wetter.getListLink(link).subscribe( this.processData.bind(this));
+        this.wetter.getListLink(link).subscribe( this.processData.bind(this)); // will be unsubscribed automatically
     }
 
     processData(data) {
