@@ -38,9 +38,9 @@ export class FormddComponent implements OnInit {
   processData(data) {
     console.log('got data');
 
-    this.dawn = new Date(data.day.dawn).toLocaleTimeString('de-DE');
-    this.dusk = new Date(data.day.dusk).toLocaleTimeString('de-DE');
-    this.tag =  new Date(data.day.dawn).toLocaleDateString('de-DE');
+    this.dawn = data.day.dawn ? new Date(data.day.dawn).toLocaleTimeString('de-DE') : '?';
+    this.dusk = data.day.dusk ? new Date(data.day.dusk).toLocaleTimeString('de-DE') : '?';
+    this.tag =  data.time;
     this.toParent.sendToParent({operation: 'params', time: this.tag, per: 'Tag', value: 'DawnDusk', stat: '00000'});
 
     if (data.links) {
