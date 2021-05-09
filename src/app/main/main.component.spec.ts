@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { MainComponent } from './main.component';
 import { FormsModule } from '@angular/forms';
@@ -36,7 +36,7 @@ describe('MainComponent', () => {
       expect(component).toBeTruthy();
   });
 
-  it('should have stations', async( () => {
+  it('should have stations', waitForAsync( () => {
     const req = http.expectOne(environment.baseUrl + '/');
     req.flush({stats: [{id: '00000', name: '####', vals: ['temp', 'hum']},
                         {id: '04928', name: 'Stuttgart', vals: ['temp', 'hum']} ],

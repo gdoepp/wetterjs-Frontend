@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PeriodeDfComponent } from './diagram-df.component';
 import { FormsModule } from '@angular/forms';
@@ -11,7 +11,7 @@ describe('PeriodeDfComponent', () => {
   let component: PeriodeDfComponent;
   let fixture: ComponentFixture<PeriodeDfComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ PeriodeDfComponent ],
       imports: [FormsModule, RouterTestingModule, HttpClientModule],
